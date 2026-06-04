@@ -1,0 +1,96 @@
+.top-nav {
+  background: var(--nav-bg);
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--nav-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.nav-club {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tigers-gold);
+  margin-right: 36px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  height: 100%;
+}
+
+.nav-link {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.nav-link:hover {
+  color: #aaa;
+}
+
+.nav-link.active {
+  color: var(--surface);
+  border-bottom-color: var(--tigers-gold);
+}
+
+.nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-user {
+  font-size: 11px;
+  color: #555;
+}
+
+.nav-role {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tigers-gold);
+  padding: 3px 8px;
+  border: 1px solid var(--nav-border);
+}
+
+.nav-signout {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #555;
+  cursor: pointer;
+  text-decoration: none;
+  background: none;
+  border: none;
+}
+
+.nav-signout:hover {
+  color: #888;
+}
+
+/* Coach nav: club name left, team info right */
+.nav-team-info {
+  font-size: 11px;
+  color: #888;
+}

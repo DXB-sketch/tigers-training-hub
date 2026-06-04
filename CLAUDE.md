@@ -2,6 +2,8 @@
 
 ## These are the rules you must follow at all times:
 
+When pushing code to github, do nost post the file .gitignore , do not post GitIgnore-Multi Files , do not push any .env files.
+
 ## 1. Think Before Coding
 Don't assume. Don't hide confusion. Surface tradeoffs.
 

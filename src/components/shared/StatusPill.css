@@ -1,0 +1,38 @@
+.status-pill {
+  display: inline-block;
+  padding: 3px 9px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+.status-pill--published {
+  background: var(--status-ok-bg);
+  color: var(--status-ok-text);
+}
+
+.status-pill--draft {
+  background: var(--status-warn-bg);
+  color: var(--status-warn-text);
+}
+
+.status-pill--error {
+  background: var(--status-err-bg);
+  color: var(--status-err-text);
+}
+
+.status-pill--no-coach {
+  background: var(--status-err-bg);
+  color: var(--status-err-text);
+}
+
+.status-pill--no-plan {
+  background: var(--status-warn-bg);
+  color: var(--status-warn-text);
+}
+
+.status-pill--live {
+  background: var(--status-ok-bg);
+  color: var(--status-ok-text);
+}

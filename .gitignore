@@ -9,9 +9,8 @@ node_modules/
 # Vite build output
 dist/
 
-# Claude Code local overrides (personal settings, not project settings)
-.claude/settings.local.json
-CLAUDE.local.md
+# Claude Code — never commit
+.claude/
 
 # OS junk
 .DS_Store
@@ -19,3 +18,11 @@ Thumbs.db
 
 # Editor
 .vscode/settings.json
+
+# Project-specific exclusions
+GitIgnore-MultiFiles/
+Prompts/
+SUPABASE_SETUP.md
+PHASE1_COMPLETE.md
+PHASE2_COMPLETE.md
+supabase/

@@ -1,0 +1,392 @@
+.builder-top-bar {
+  background: var(--nav-bg);
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 16px;
+  border-bottom: 1px solid var(--nav-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tb-back {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #555;
+  cursor: pointer;
+  text-decoration: none;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+}
+
+.tb-back:hover {
+  color: #888;
+}
+
+.tb-breadcrumb {
+  font-size: 11px;
+  color: #666;
+  flex: 1;
+}
+
+.tb-breadcrumb strong {
+  color: #aaa;
+  font-weight: 700;
+}
+
+.tb-actions {
+  display: flex;
+  margin-left: auto;
+}
+
+.tb-btn {
+  height: 52px;
+  padding: 0 16px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #666;
+  background: none;
+  border: none;
+  border-left: 1px solid var(--nav-border);
+  cursor: pointer;
+}
+
+.tb-btn:hover {
+  color: #aaa;
+  background: #1e1e1c;
+}
+
+.tb-btn--publish {
+  color: var(--nav-bg);
+  background: var(--tigers-gold);
+  border-color: var(--tigers-gold);
+}
+
+.tb-btn--publish:hover {
+  background: #e0a000;
+}
+
+/* Plan metadata header */
+.plan-meta-header {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  padding: 14px 24px;
+  border-bottom: 2px solid var(--ink);
+  background: var(--surface);
+  flex-wrap: wrap;
+}
+
+.pmh-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pmh-field--title {
+  flex: 1;
+  min-width: 200px;
+}
+
+.pmh-field--status {
+  flex-shrink: 0;
+}
+
+.pmh-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #bbb;
+}
+
+.pmh-input {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  background: none;
+  border: none;
+  border-bottom: 1.5px solid transparent;
+  outline: none;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 2px 0;
+  width: 80px;
+}
+
+.pmh-input--title {
+  font-size: 16px;
+  width: 100%;
+}
+
+.pmh-input:focus {
+  border-bottom-color: var(--tigers-gold);
+}
+
+.pmh-select {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  background: none;
+  border: none;
+  border-bottom: 1.5px solid transparent;
+  outline: none;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.pmh-select:focus {
+  border-bottom-color: var(--tigers-gold);
+}
+
+.pmh-status-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.pmh-publish-confirm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pmh-confirm-text {
+  font-size: 11px;
+  color: var(--ink-mid);
+}
+
+.pmh-confirm-btn {
+  padding: 4px 10px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  border: 1.5px solid var(--ink);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.pmh-confirm-btn--yes {
+  background: var(--ink);
+  color: var(--tigers-gold);
+  border-color: var(--ink);
+}
+
+.builder-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: calc(100vh - 52px);
+}
+
+/* DRILL EDITOR */
+.drill-editor {
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+}
+
+.de-header {
+  padding: 16px 24px 14px;
+  border-bottom: 2px solid var(--ink);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.de-drill-num {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tigers-gold);
+  margin-bottom: 4px;
+}
+
+.de-title-input {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  background: none;
+  border: none;
+  outline: none;
+  border-bottom: 1.5px solid transparent;
+  padding-bottom: 2px;
+  width: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.de-title-input:focus {
+  border-bottom-color: var(--tigers-gold);
+}
+
+.de-meta-row {
+  display: flex;
+  border-bottom: 1px solid var(--rule);
+  padding: 0 24px;
+}
+
+.de-meta-field {
+  padding: 8px 20px 8px 0;
+  margin-right: 20px;
+  border-right: 1px solid var(--rule);
+}
+
+.de-meta-field:last-child {
+  border-right: none;
+}
+
+.de-meta-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 3px;
+}
+
+.de-meta-input {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  background: none;
+  border: none;
+  border-bottom: 1.5px solid transparent;
+  outline: none;
+  font-family: Arial, Helvetica, sans-serif;
+  width: 80px;
+  padding: 0;
+}
+
+.de-meta-input:focus {
+  border-bottom-color: var(--tigers-gold);
+}
+
+/* Pitch area */
+.pitch-area {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface-warm);
+}
+
+.pitch-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.pt-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #888;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.pt-btn {
+  padding: 5px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #666;
+  background: var(--surface);
+  border: 1.5px solid var(--rule);
+  cursor: pointer;
+}
+
+.pt-btn:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.pt-btn.active {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--tigers-gold);
+}
+
+.pt-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--rule);
+  flex-shrink: 0;
+}
+
+.pitch-editor-wrap {
+  border: 1px solid #aaa;
+  background: var(--pitch-green);
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+/* Drill fields */
+.drill-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  flex: 1;
+}
+
+.drill-field-col {
+  padding: 16px 24px;
+}
+
+.drill-field-col + .drill-field-col {
+  border-left: 1px solid var(--rule);
+}
+
+.field-section {
+  margin-bottom: 18px;
+}
+
+.fs-label {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  border-bottom: 1.5px solid var(--tigers-gold);
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.fs-textarea {
+  width: 100%;
+  padding: 8px 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ink-mid);
+  font-family: Arial, Helvetica, sans-serif;
+  background: none;
+  border: none;
+  outline: none;
+  resize: none;
+  min-height: 72px;
+}
+
+.fs-textarea::placeholder {
+  color: #ccc;
+}
+
+.fs-textarea:focus {
+  background: var(--tigers-gold-pale);
+  padding: 8px;
+  margin: -8px;
+}

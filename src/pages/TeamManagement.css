@@ -1,0 +1,102 @@
+.team-mgmt-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  min-height: calc(100vh - 120px);
+}
+
+.team-list-panel {
+  background: var(--surface);
+  border-right: 1px solid var(--rule);
+}
+
+.team-list-head {
+  padding: 10px 24px 8px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bbb;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 2fr 2fr 1.5fr 1fr 60px;
+  gap: 12px;
+}
+
+.team-row {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1.5fr 1fr 60px;
+  gap: 12px;
+  align-items: center;
+  padding: 13px 24px;
+  border-bottom: 1px solid var(--rule-light);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.team-row:hover {
+  background: #f7f5ef;
+}
+
+.team-row.selected {
+  background: var(--tigers-gold-pale);
+}
+
+.team-row:last-child {
+  border-bottom: none;
+}
+
+.tr-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.tr-coach {
+  font-size: 12px;
+  color: #444;
+}
+
+.tr-no-coach {
+  font-size: 12px;
+  color: #bbb;
+  font-style: italic;
+}
+
+.tr-plan {
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.tr-no-plan {
+  font-size: 11px;
+  color: #bbb;
+}
+
+.tr-action {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--tigers-gold);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+@media (max-width: 700px) {
+  .team-mgmt-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .team-list-head {
+    display: none;
+  }
+
+  .team-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .team-row > *:not(:first-child):not(:last-child) {
+    display: none;
+  }
+}

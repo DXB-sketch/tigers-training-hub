@@ -1,0 +1,80 @@
+.plans-list {
+  background: var(--surface);
+}
+
+.week-divider {
+  padding: 10px 24px 6px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #888;
+  background: var(--surface-meta);
+  border-bottom: 1px solid var(--rule);
+  border-top: 1px solid var(--rule);
+}
+
+.plan-item {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 0 16px;
+  align-items: center;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--rule-light);
+  cursor: pointer;
+  transition: background 0.1s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.plan-item:hover {
+  background: #f7f5ef;
+}
+
+.plan-item:last-child {
+  border-bottom: none;
+}
+
+.pi-week {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--rule);
+  line-height: 1;
+  text-align: right;
+}
+
+.pi-team {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tigers-gold);
+  margin-bottom: 3px;
+}
+
+.pi-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+
+.pi-meta {
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.pi-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.pi-action {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--tigers-gold);
+}

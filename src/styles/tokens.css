@@ -1,0 +1,26 @@
+:root {
+  --tigers-gold: #c88000;
+  --tigers-gold-pale: #fdf6e3;
+  --ink: #1a1a18;
+  --ink-mid: #2a2a26;
+  --ink-muted: #666666;
+  --ink-faint: #888888;
+  --rule: #d8d4cc;
+  --rule-light: #eeebe4;
+  --surface: #fdfcf9;
+  --surface-warm: #f5f2eb;
+  --surface-meta: #f0ede6;
+  --page-bg: #e0ddd6;
+  --nav-bg: #1a1a18;
+  --nav-border: #2e2e2a;
+  --status-ok-bg: #e6f0dc;
+  --status-ok-text: #2a5e10;
+  --status-warn-bg: #fdf4dc;
+  --status-warn-text: #7a4e00;
+  --status-err-bg: #fce8e8;
+  --status-err-text: #8a1c1c;
+  --pitch-green: #2d5a1b;
+  --pitch-line: #a8d880;
+  --player-red: #c01818;
+  --player-blue: #1a4ba8;
+}

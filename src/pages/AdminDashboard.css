@@ -1,0 +1,130 @@
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+}
+
+.stat-cell {
+  padding: 14px 24px;
+  border-right: 1px solid var(--rule);
+}
+
+.stat-cell:last-child {
+  border-right: none;
+}
+
+.stat-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 4px;
+}
+
+.stat-num {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.stat-num--gold {
+  color: var(--tigers-gold);
+}
+
+.stat-sub {
+  font-size: 10px;
+  color: #999;
+}
+
+.section-label {
+  padding: 14px 24px 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-action {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tigers-gold);
+  cursor: pointer;
+  text-decoration: none;
+  background: none;
+  border: none;
+}
+
+.plans-block {
+  background: var(--surface);
+  margin-top: 12px;
+}
+
+.plan-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--rule-light);
+  gap: 14px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.plan-row:hover {
+  background: #f7f5ef;
+}
+
+.plan-row:last-child {
+  border-bottom: none;
+}
+
+.plan-week {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--rule);
+  min-width: 36px;
+  line-height: 1;
+}
+
+.plan-body {
+  flex: 1;
+}
+
+.plan-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.plan-meta {
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.plan-action {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--tigers-gold);
+}
+
+@media (max-width: 600px) {
+  .stats-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stat-cell:nth-child(2) {
+    border-right: none;
+  }
+}

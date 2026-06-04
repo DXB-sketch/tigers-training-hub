@@ -1,0 +1,38 @@
+.page-head {
+  background: var(--surface);
+  padding: 20px 24px 16px;
+  border-bottom: 2.5px solid var(--ink);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.page-sub {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.primary-btn {
+  background: var(--ink);
+  color: var(--tigers-gold);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.primary-btn:hover {
+  background: var(--nav-border);
+}

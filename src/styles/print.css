@@ -1,0 +1,36 @@
+@media print {
+  @page {
+    margin: 12mm;
+    size: A4 portrait;
+  }
+
+  body {
+    background: #fff;
+    padding: 0;
+  }
+
+  .top-nav,
+  .drill-nav,
+  .pitch-toolbar,
+  .plan-sidebar,
+  .filter-bar {
+    display: none;
+  }
+
+  .pitch-svg-wrap {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .content-cols,
+  .drill-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .page-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}

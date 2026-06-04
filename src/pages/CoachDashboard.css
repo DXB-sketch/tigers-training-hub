@@ -1,0 +1,181 @@
+.session-header {
+  background: var(--surface);
+  border-bottom: 2.5px solid var(--ink);
+  padding: 20px 20px 16px;
+}
+
+.session-date {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 4px;
+}
+
+.session-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 2px;
+  line-height: 1.1;
+}
+
+.session-team {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+/* Overview block */
+.overview-block {
+  background: var(--surface);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+
+.overview-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 10px;
+}
+
+.overview-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.overview-table th {
+  text-align: left;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bbb;
+  padding: 0 0 8px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.overview-table td {
+  font-size: 12px;
+  color: var(--ink-mid);
+  padding: 9px 0 8px;
+  border-bottom: 1px solid var(--rule-light);
+  vertical-align: top;
+}
+
+.overview-table tr:last-child td {
+  border-bottom: none;
+}
+
+.ov-num {
+  width: 28px;
+  font-weight: 700;
+  color: var(--tigers-gold);
+}
+
+.ov-dur {
+  width: 56px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.drill-link {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.drill-link:hover {
+  color: var(--tigers-gold);
+}
+
+.current-row td {
+  background: var(--tigers-gold-pale);
+}
+
+/* Drill cards */
+.drills-label {
+  padding: 12px 20px 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.drill-cards {
+  display: flex;
+  flex-direction: column;
+}
+
+.drill-card {
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.1s;
+}
+
+.drill-card:hover {
+  background: var(--surface-warm);
+}
+
+.drill-card.active {
+  background: var(--tigers-gold-pale);
+}
+
+.dc-num {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--rule);
+  min-width: 28px;
+  line-height: 1;
+}
+
+.drill-card.active .dc-num {
+  color: var(--tigers-gold);
+}
+
+.dc-body {
+  flex: 1;
+}
+
+.dc-cat {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 3px;
+}
+
+.drill-card.active .dc-cat {
+  color: var(--tigers-gold);
+}
+
+.dc-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.dc-meta {
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.dc-arrow {
+  font-size: 16px;
+  color: var(--tigers-gold);
+  flex-shrink: 0;
+}

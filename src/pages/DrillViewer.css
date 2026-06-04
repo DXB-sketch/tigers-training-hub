@@ -1,0 +1,19 @@
+.drill-back-link {
+  margin-bottom: 12px;
+}
+
+.drill-back-link button {
+  background: none;
+  border: none;
+  color: var(--tigers-gold);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  padding: 0;
+}
+
+.drill-back-link button:hover {
+  opacity: 0.75;
+}
