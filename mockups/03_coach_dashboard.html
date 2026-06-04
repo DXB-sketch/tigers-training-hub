@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tigers — Coach Dashboard</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #e0ddd6;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+}
+
+/* TOP NAV */
+.top-nav {
+  background: #1a1a18;
+  padding: 0 20px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.nav-club {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c88000;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.nav-user {
+  font-size: 11px;
+  color: #888;
+}
+.nav-signout {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #555;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* SESSION HEADER */
+.session-header {
+  background: #fdfcf9;
+  border-bottom: 2.5px solid #1a1a18;
+  padding: 20px 20px 16px;
+}
+.session-date {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 4px;
+}
+.session-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a18;
+  margin-bottom: 2px;
+  line-height: 1.1;
+}
+.session-team {
+  font-size: 12px;
+  color: #666;
+}
+
+/* SESSION OVERVIEW TABLE */
+.overview-block {
+  background: #fdfcf9;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+.overview-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 10px;
+}
+.overview-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.overview-table th {
+  text-align: left;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bbb;
+  padding: 0 0 8px;
+  border-bottom: 1px solid #d8d4cc;
+}
+.overview-table td {
+  font-size: 12px;
+  color: #2a2a26;
+  padding: 9px 0 8px;
+  border-bottom: 1px solid #eeebe4;
+  vertical-align: top;
+}
+.overview-table tr:last-child td { border-bottom: none; }
+.overview-table .num-col {
+  width: 28px;
+  font-weight: 700;
+  color: #c88000;
+}
+.overview-table .dur-col {
+  width: 56px;
+  font-weight: 700;
+  color: #1a1a18;
+}
+.drill-link {
+  color: #1a1a18;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+.drill-link:hover { color: #c88000; }
+.current-row td {
+  background: #fdf6e3;
+}
+.current-row .num-col {
+  color: #c88000;
+}
+
+/* DRILL STRIP LABEL */
+.drills-label {
+  padding: 12px 20px 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #888;
+}
+
+/* DRILL CARD (preview) */
+.drill-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.drill-card {
+  background: #fdfcf9;
+  border-bottom: 1px solid #d8d4cc;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.1s;
+}
+.drill-card:hover { background: #f5f2eb; }
+.drill-card.active { background: #fdf6e3; }
+.dc-num {
+  font-size: 22px;
+  font-weight: 700;
+  color: #d8d4cc;
+  min-width: 28px;
+  line-height: 1;
+}
+.drill-card.active .dc-num { color: #c88000; }
+.dc-body { flex: 1; }
+.dc-cat {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 3px;
+}
+.drill-card.active .dc-cat { color: #c88000; }
+.dc-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a18;
+  margin-bottom: 2px;
+}
+.dc-meta {
+  font-size: 11px;
+  color: #888;
+}
+.dc-arrow {
+  font-size: 16px;
+  color: #c88000;
+  flex-shrink: 0;
+}
+
+/* NO SESSION STATE */
+.no-session {
+  background: #fdfcf9;
+  padding: 48px 20px;
+  text-align: center;
+  border-bottom: 1px solid #d8d4cc;
+}
+.no-session-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+  color: #d8d4cc;
+}
+.no-session-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a18;
+  margin-bottom: 6px;
+}
+.no-session-sub {
+  font-size: 12px;
+  color: #888;
+  line-height: 1.5;
+}
+</style>
+</head>
+<body>
+
+<div class="top-nav">
+  <div class="nav-club">Bribie Tigers</div>
+  <div class="nav-right">
+    <span class="nav-user">Mark Thompson &nbsp;&middot;&nbsp; Under 12s</span>
+    <a class="nav-signout">Sign out</a>
+  </div>
+</div>
+
+<!-- SESSION HEADER -->
+<div class="session-header">
+  <div class="session-date">Wednesday, 4 June 2026</div>
+  <div class="session-title">Week 4: Pressing &amp; Transition</div>
+  <div class="session-team">Under 12s &nbsp;&middot;&nbsp; Coach: Mark Thompson</div>
+</div>
+
+<!-- SESSION OVERVIEW TABLE -->
+<div class="overview-block">
+  <div class="overview-label">Session overview</div>
+  <table class="overview-table">
+    <thead>
+      <tr>
+        <th class="num-col">#</th>
+        <th>Exercise</th>
+        <th class="dur-col">Duration</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="num-col">1</td>
+        <td><a class="drill-link">Warm-up &amp; dynamic movement</a></td>
+        <td>10 min</td>
+        <td>Light jog, stretching, passing pairs</td>
+      </tr>
+      <tr>
+        <td class="num-col">2</td>
+        <td><a class="drill-link">Rondo 4v2</a></td>
+        <td>10 min</td>
+        <td>Possession under pressure, small grid</td>
+      </tr>
+      <tr class="current-row">
+        <td class="num-col">3</td>
+        <td><a class="drill-link">High press trigger: shape &amp; recover</a></td>
+        <td>15 min</td>
+        <td>As per diagram &mdash; see drill sheet</td>
+      </tr>
+      <tr>
+        <td class="num-col">4</td>
+        <td><a class="drill-link">Transition game 6v6+GK</a></td>
+        <td>20 min</td>
+        <td>Apply press trigger in live game context</td>
+      </tr>
+      <tr>
+        <td class="num-col">5</td>
+        <td><a class="drill-link">Cool-down &amp; debrief</a></td>
+        <td>5 min</td>
+        <td>Light stretching, coach Q&amp;A</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- DRILL LIST -->
+<div class="drills-label">Drill sheets</div>
+<div class="drill-cards">
+
+  <a class="drill-card">
+    <div class="dc-num">1</div>
+    <div class="dc-body">
+      <div class="dc-cat">Warm-up</div>
+      <div class="dc-name">Dynamic movement &amp; passing pairs</div>
+      <div class="dc-meta">10 min &nbsp;&middot;&nbsp; All players</div>
+    </div>
+    <div class="dc-arrow">&#8594;</div>
+  </a>
+
+  <a class="drill-card">
+    <div class="dc-num">2</div>
+    <div class="dc-body">
+      <div class="dc-cat">Technical &mdash; Possession</div>
+      <div class="dc-name">Rondo 4v2</div>
+      <div class="dc-meta">10 min &nbsp;&middot;&nbsp; Groups of 6</div>
+    </div>
+    <div class="dc-arrow">&#8594;</div>
+  </a>
+
+  <a class="drill-card active">
+    <div class="dc-num">3</div>
+    <div class="dc-body">
+      <div class="dc-cat">Technical &mdash; Pressing</div>
+      <div class="dc-name">High Press Trigger: Shape &amp; Recover</div>
+      <div class="dc-meta">15 min &nbsp;&middot;&nbsp; 9 v 5 &nbsp;&middot;&nbsp; High intensity</div>
+    </div>
+    <div class="dc-arrow">&#8594;</div>
+  </a>
+
+  <a class="drill-card">
+    <div class="dc-num">4</div>
+    <div class="dc-body">
+      <div class="dc-cat">Small-sided game</div>
+      <div class="dc-name">Transition game 6v6 + GK</div>
+      <div class="dc-meta">20 min &nbsp;&middot;&nbsp; Full group</div>
+    </div>
+    <div class="dc-arrow">&#8594;</div>
+  </a>
+
+  <a class="drill-card">
+    <div class="dc-num">5</div>
+    <div class="dc-body">
+      <div class="dc-cat">Cool-down</div>
+      <div class="dc-name">Stretch &amp; debrief</div>
+      <div class="dc-meta">5 min</div>
+    </div>
+    <div class="dc-arrow">&#8594;</div>
+  </a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tigers — Admin Dashboard</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #e0ddd6;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* NAV */
+.top-nav {
+  background: #1a1a18;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 0;
+  border-bottom: 1px solid #2e2e2a;
+}
+.nav-club {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c88000;
+  margin-right: 36px;
+  flex-shrink: 0;
+}
+.nav-links {
+  display: flex;
+  height: 100%;
+  gap: 0;
+}
+.nav-link {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #666;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.nav-link:hover { color: #aaa; }
+.nav-link.active { color: #fdfcf9; border-bottom-color: #c88000; }
+.nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.nav-user {
+  font-size: 11px;
+  color: #555;
+}
+.nav-role {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c88000;
+  padding: 3px 8px;
+  border: 1px solid #2e2e2a;
+}
+
+/* PAGE HEADER */
+.page-head {
+  background: #fdfcf9;
+  padding: 20px 24px 16px;
+  border-bottom: 2.5px solid #1a1a18;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.page-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a18;
+  margin-bottom: 2px;
+}
+.page-sub {
+  font-size: 12px;
+  color: #777;
+}
+.new-plan-btn {
+  background: #1a1a18;
+  color: #c88000;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* STATS ROW */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #fdfcf9;
+  border-bottom: 1px solid #d8d4cc;
+}
+.stat-cell {
+  padding: 14px 24px;
+  border-right: 1px solid #d8d4cc;
+}
+.stat-cell:last-child { border-right: none; }
+.stat-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 4px;
+}
+.stat-num {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a18;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.stat-num.gold { color: #c88000; }
+.stat-sub {
+  font-size: 10px;
+  color: #999;
+}
+
+/* SECTION LABEL */
+.section-label {
+  padding: 14px 24px 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.section-action {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c88000;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* TEAMS TABLE */
+.teams-table-wrap {
+  background: #fdfcf9;
+  border-bottom: 1px solid #d8d4cc;
+}
+.teams-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.teams-table th {
+  text-align: left;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bbb;
+  padding: 10px 24px 8px;
+  border-bottom: 1px solid #d8d4cc;
+}
+.teams-table td {
+  font-size: 12px;
+  color: #2a2a26;
+  padding: 11px 24px;
+  border-bottom: 1px solid #eeebe4;
+  vertical-align: middle;
+}
+.teams-table tr:last-child td { border-bottom: none; }
+.teams-table tr:hover td { background: #f7f5ef; }
+
+.team-name {
+  font-weight: 700;
+  color: #1a1a18;
+  font-size: 13px;
+}
+.coach-name { color: #444; }
+.no-coach { color: #bbb; font-style: italic; }
+
+.status-pill {
+  display: inline-block;
+  padding: 3px 9px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.status-ok { background: #e6f0dc; color: #2a5e10; }
+.status-warn { background: #fdf4dc; color: #7a4e00; }
+.status-err { background: #fce8e8; color: #8a1c1c; }
+
+.row-action {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #c88000;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* RECENT PLANS */
+.plans-block {
+  background: #fdfcf9;
+  margin-top: 12px;
+}
+
+.plan-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  border-bottom: 1px solid #eeebe4;
+  gap: 14px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.plan-row:hover { background: #f7f5ef; }
+.plan-row:last-child { border-bottom: none; }
+
+.plan-week {
+  font-size: 22px;
+  font-weight: 700;
+  color: #d8d4cc;
+  min-width: 36px;
+  line-height: 1;
+}
+.plan-body { flex: 1; }
+.plan-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a18;
+  margin-bottom: 2px;
+}
+.plan-meta {
+  font-size: 11px;
+  color: #888;
+}
+.plan-action {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #c88000;
+}
+
+@media (max-width: 600px) {
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .stat-cell:nth-child(2) { border-right: none; }
+  .teams-table .hide-mobile { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-nav">
+  <div class="nav-club">Bribie Tigers</div>
+  <div class="nav-links">
+    <a class="nav-link active">Dashboard</a>
+    <a class="nav-link">Teams</a>
+    <a class="nav-link">Training Plans</a>
+  </div>
+  <div class="nav-right">
+    <span class="nav-user">Sarah Admin</span>
+    <span class="nav-role">Admin</span>
+  </div>
+</div>
+
+<div class="page-head">
+  <div>
+    <div class="page-title">Dashboard</div>
+    <div class="page-sub">Wednesday, 4 June 2026 &nbsp;&middot;&nbsp; Week 4 in progress</div>
+  </div>
+  <a class="new-plan-btn">+ New training plan</a>
+</div>
+
+<div class="stats-row">
+  <div class="stat-cell">
+    <div class="stat-label">Teams</div>
+    <div class="stat-num">12</div>
+    <div class="stat-sub">All age groups</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-label">Active coaches</div>
+    <div class="stat-num">14</div>
+    <div class="stat-sub">Across all teams</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-label">Plans this week</div>
+    <div class="stat-num gold">7</div>
+    <div class="stat-sub">5 published, 2 draft</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-label">Needs attention</div>
+    <div class="stat-num">2</div>
+    <div class="stat-sub">Unassigned teams</div>
+  </div>
+</div>
+
+<div class="section-label">
+  All teams
+  <a class="section-action">Manage teams</a>
+</div>
+
+<div class="teams-table-wrap">
+  <table class="teams-table">
+    <thead>
+      <tr>
+        <th>Team</th>
+        <th>Coach</th>
+        <th class="hide-mobile">This week's plan</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div class="team-name">Under 6s</div></td>
+        <td><span class="coach-name">Jane Cooper</span></td>
+        <td class="hide-mobile">Fun fundamentals &ndash; Wk 4</td>
+        <td><span class="status-pill status-ok">Published</span></td>
+        <td><a class="row-action">Edit</a></td>
+      </tr>
+      <tr>
+        <td><div class="team-name">Under 8s</div></td>
+        <td><span class="coach-name">Dave Walsh</span></td>
+        <td class="hide-mobile">Dribbling &amp; turns &ndash; Wk 4</td>
+        <td><span class="status-pill status-ok">Published</span></td>
+        <td><a class="row-action">Edit</a></td>
+      </tr>
+      <tr>
+        <td><div class="team-name">Under 10s</div></td>
+        <td><span class="coach-name">Lisa Roberts</span></td>
+        <td class="hide-mobile">Passing combinations &ndash; Wk 4</td>
+        <td><span class="status-pill status-warn">Draft</span></td>
+        <td><a class="row-action">Edit</a></td>
+      </tr>
+      <tr>
+        <td><div class="team-name">Under 12s</div></td>
+        <td><span class="coach-name">Mark Thompson</span></td>
+        <td class="hide-mobile">Pressing &amp; transition &ndash; Wk 4</td>
+        <td><span class="status-pill status-ok">Published</span></td>
+        <td><a class="row-action">Edit</a></td>
+      </tr>
+      <tr>
+        <td><div class="team-name">Under 14s</div></td>
+        <td><span class="coach-name">Tony Briggs</span></td>
+        <td class="hide-mobile">&mdash;</td>
+        <td><span class="status-pill status-warn">No plan</span></td>
+        <td><a class="row-action">Assign</a></td>
+      </tr>
+      <tr>
+        <td><div class="team-name">Under 16s</div></td>
+        <td><span class="no-coach">No coach assigned</span></td>
+        <td class="hide-mobile">&mdash;</td>
+        <td><span class="status-pill status-err">No coach</span></td>
+        <td><a class="row-action">Fix</a></td>
+      </tr>
+      <tr>
+        <td><div class="team-name">Senior Men's</div></td>
+        <td><span class="coach-name">Phil Santos</span></td>
+        <td class="hide-mobile">Shape &amp; press &ndash; Wk 4</td>
+        <td><span class="status-pill status-ok">Published</span></td>
+        <td><a class="row-action">Edit</a></td>
+      </tr>
+      <tr>
+        <td><div class="team-name">Senior Women's</div></td>
+        <td><span class="coach-name">Amy Park</span></td>
+        <td class="hide-mobile">Wide play &amp; crossing &ndash; Wk 4</td>
+        <td><span class="status-pill status-ok">Published</span></td>
+        <td><a class="row-action">Edit</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section-label">
+  Recent training plans
+  <a class="section-action">View all plans</a>
+</div>
+
+<div class="plans-block">
+  <div class="plan-row">
+    <div class="plan-week">4</div>
+    <div class="plan-body">
+      <div class="plan-name">Pressing &amp; Transition &mdash; Under 12s</div>
+      <div class="plan-meta">6 drills &nbsp;&middot;&nbsp; 60 min &nbsp;&middot;&nbsp; Created 2 Jun 2026</div>
+    </div>
+    <div class="plan-action">Open</div>
+  </div>
+  <div class="plan-row">
+    <div class="plan-week">4</div>
+    <div class="plan-body">
+      <div class="plan-name">Wide Play &amp; Crossing &mdash; Senior Women's</div>
+      <div class="plan-meta">5 drills &nbsp;&middot;&nbsp; 75 min &nbsp;&middot;&nbsp; Created 1 Jun 2026</div>
+    </div>
+    <div class="plan-action">Open</div>
+  </div>
+  <div class="plan-row">
+    <div class="plan-week">3</div>
+    <div class="plan-body">
+      <div class="plan-name">Passing Combinations &mdash; Under 10s</div>
+      <div class="plan-meta">4 drills &nbsp;&middot;&nbsp; 55 min &nbsp;&middot;&nbsp; Draft</div>
+    </div>
+    <div class="plan-action">Edit</div>
+  </div>
+</div>
+
+</body>
+</html>

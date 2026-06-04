@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Environment — never commit secrets
+.env
+.env.local
+.env.production
+
+# Vite build output
+dist/
+
+# Claude Code local overrides (personal settings, not project settings)
+.claude/settings.local.json
+CLAUDE.local.md
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json

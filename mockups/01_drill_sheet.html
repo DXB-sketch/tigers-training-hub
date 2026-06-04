@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tigers — Drill Sheet</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #e0ddd6;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 24px 16px;
+}
+
+.page {
+  background: #fdfcf9;
+  max-width: 760px;
+  margin: 0 auto;
+  color: #1a1a18;
+}
+
+/* HEADER */
+.page-header {
+  padding: 20px 28px 16px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 2.5px solid #1a1a18;
+}
+.header-club {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #1a1a18;
+  margin-bottom: 3px;
+}
+.header-session {
+  font-size: 12px;
+  color: #777;
+}
+.header-right { text-align: right; }
+.ex-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 2px;
+}
+.ex-num {
+  font-size: 32px;
+  font-weight: 700;
+  color: #c88000;
+  line-height: 1;
+}
+
+/* META ROW */
+.meta-row {
+  padding: 10px 28px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid #d8d4cc;
+}
+.meta-item + .meta-item {
+  border-left: 1px solid #d8d4cc;
+  padding-left: 16px;
+}
+.meta-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 2px;
+}
+.meta-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a18;
+}
+.meta-val.gold { color: #c88000; }
+
+/* DRILL TITLE */
+.drill-title-block {
+  padding: 16px 28px 0;
+}
+.drill-cat {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #c88000;
+  margin-bottom: 5px;
+}
+.drill-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a18;
+  line-height: 1.1;
+  margin-bottom: 5px;
+}
+.drill-sub {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.45;
+}
+
+/* PITCH */
+.pitch-block {
+  padding: 16px 28px 0;
+  position: relative;
+}
+.pitch-svg-wrap {
+  border: 1px solid #aaa;
+  overflow: hidden;
+  background: #2d5a1b;
+}
+.pitch-legend {
+  display: flex;
+  gap: 20px;
+  padding: 6px 0 0;
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  color: #666;
+}
+.legend-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.legend-line-move {
+  width: 24px; height: 2px;
+  background: #c88000;
+  position: relative;
+}
+.legend-line-pass {
+  width: 24px; height: 0;
+  border-top: 2px dashed #2255aa;
+}
+
+/* CONTENT */
+.content-cols {
+  padding: 20px 28px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 36px;
+}
+
+.col-section {
+  margin-bottom: 18px;
+}
+
+.sh {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #1a1a18;
+  border-bottom: 1.5px solid #c88000;
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.blist {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.blist li {
+  font-size: 12px;
+  line-height: 1.55;
+  color: #2a2a26;
+  padding-left: 13px;
+  position: relative;
+}
+.blist li::before {
+  content: '\2022';
+  position: absolute;
+  left: 0;
+  top: 1px;
+  color: #c88000;
+  font-size: 12px;
+}
+
+.body-text {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #2a2a26;
+}
+
+.kt  { font-weight: 700; color: #c88000; }
+.ktd { font-weight: 700; color: #1a1a18; }
+
+/* ORG GRID */
+.org-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+  margin-top: 2px;
+}
+.org-item-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 1px;
+}
+.org-item-val {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a1a18;
+}
+
+/* SWIPE NAV (screen only) */
+.drill-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 28px;
+  border-top: 1px solid #d8d4cc;
+  margin-top: 4px;
+}
+.nav-btn {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #c88000;
+  text-decoration: none;
+  cursor: pointer;
+}
+.nav-dots {
+  display: flex; gap: 6px; align-items: center;
+}
+.nav-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #d8d4cc;
+}
+.nav-dot.active { background: #c88000; }
+
+/* FOOTER */
+.page-footer {
+  padding: 9px 28px;
+  border-top: 1px solid #d8d4cc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-txt {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #bbb;
+}
+
+/* RESPONSIVE */
+@media (max-width: 540px) {
+  .content-cols { grid-template-columns: 1fr; }
+  .meta-row { grid-template-columns: 1fr 1fr; row-gap: 10px; }
+  .meta-item + .meta-item { border-left: none; padding-left: 0; }
+  .meta-row .meta-item:nth-child(2n) { border-left: 1px solid #d8d4cc; padding-left: 16px; }
+}
+
+/* PRINT */
+@media print {
+  @page { margin: 12mm; size: A4 portrait; }
+  body { background: #fff; padding: 0; }
+  .page { max-width: 100%; }
+  .drill-nav { display: none; }
+  .meta-item + .meta-item { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pitch-svg-wrap { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <div class="header-club">Bribie Island Tigers FC</div>
+      <div class="header-session">Under 12s &nbsp;&middot;&nbsp; Week 4 &nbsp;&middot;&nbsp; Wednesday</div>
+    </div>
+    <div class="header-right">
+      <div class="ex-label">Exercise</div>
+      <div class="ex-num">3/6</div>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="meta-label">Coach</div>
+      <div class="meta-val">Mark Thompson</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Duration</div>
+      <div class="meta-val gold">15 min</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Format</div>
+      <div class="meta-val">9 v 5</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Intensity</div>
+      <div class="meta-val">High</div>
+    </div>
+  </div>
+
+  <div class="drill-title-block">
+    <div class="drill-cat">Technical &mdash; Pressing &amp; Recovery</div>
+    <div class="drill-name">High Press Trigger: Shape &amp; Recover</div>
+    <div class="drill-sub">Coordinated front-foot pressure on GK distribution, with structured recovery shape on turnover</div>
+  </div>
+
+  <!-- PITCH: cropped to relevant zone - one half only -->
+  <div class="pitch-block">
+    <div class="pitch-svg-wrap">
+      <svg viewBox="0 0 720 280" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+        <defs>
+          <marker id="aMove" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+            <path d="M1 2 L8 5 L1 8" fill="none" stroke="#f0a500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="aPass" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+            <path d="M1 2 L8 5 L1 8" fill="none" stroke="#4477cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- Pitch surface - one half + overlap -->
+        <rect width="720" height="280" fill="#2d5a1b"/>
+        <!-- Pitch border -->
+        <rect x="14" y="14" width="692" height="262" fill="none" stroke="#a8d880" stroke-width="1" opacity="0.5"/>
+        <!-- Halfway line at bottom of view -->
+        <line x1="14" y1="262" x2="706" y2="262" stroke="#a8d880" stroke-width="1" opacity="0.4"/>
+        <!-- Penalty area -->
+        <rect x="232" y="14" width="256" height="88" fill="none" stroke="#a8d880" stroke-width="0.8" opacity="0.45"/>
+        <!-- 6-yard box -->
+        <rect x="296" y="14" width="128" height="36" fill="none" stroke="#a8d880" stroke-width="0.8" opacity="0.45"/>
+        <!-- Goal - solid white, thicker for distinction -->
+        <rect x="288" y="5" width="144" height="12" fill="#3a7525" stroke="#fff" stroke-width="2.5"/>
+        <line x1="288" y="5" x2="288" y2="17" stroke="#fff" stroke-width="2.5"/>
+        <line x1="432" y="5" x2="432" y2="17" stroke="#fff" stroke-width="2.5"/>
+        <line x1="288" y="17" x2="432" y2="17" stroke="#fff" stroke-width="2.5"/>
+        <!-- Penalty spot -->
+        <circle cx="360" cy="76" r="2.5" fill="#a8d880" opacity="0.5"/>
+        <!-- Partial centre circle arc -->
+        <path d="M 314 262 A 52 52 0 0 0 406 262" fill="none" stroke="#a8d880" stroke-width="0.8" opacity="0.35"/>
+
+        <!-- Press zone dashed ellipse -->
+        <ellipse cx="360" cy="155" rx="112" ry="42" fill="rgba(240,165,0,0.06)" stroke="#f0a500" stroke-width="1.2" stroke-dasharray="6,4"/>
+
+        <!-- Movement arrows (gold dashed) -->
+        <path d="M360 228 Q310 185 238 162" fill="none" stroke="#f0a500" stroke-width="2" stroke-dasharray="7,4" marker-end="url(#aMove)"/>
+        <path d="M196 155 Q172 130 178 95" fill="none" stroke="#f0a500" stroke-width="2" stroke-dasharray="7,4" marker-end="url(#aMove)"/>
+        <path d="M524 155 Q548 130 540 95" fill="none" stroke="#f0a500" stroke-width="2" stroke-dasharray="7,4" marker-end="url(#aMove)"/>
+
+        <!-- Pass lines (navy dashed) -->
+        <path d="M238 162 L196 155" fill="none" stroke="#4477cc" stroke-width="1.6" stroke-dasharray="4,3" marker-end="url(#aPass)"/>
+        <path d="M360 162 L524 155" fill="none" stroke="#4477cc" stroke-width="1.6" stroke-dasharray="4,3" marker-end="url(#aPass)"/>
+
+        <!-- RED players -->
+        <circle cx="360" cy="234" r="14" fill="#c01818" stroke="#c01818" stroke-width="0"/>
+        <text x="360" y="238" text-anchor="middle" font-size="10" fill="white" font-family="Arial" font-weight="700">GK</text>
+        <text x="360" y="254" text-anchor="middle" font-size="9" fill="#e8e0cc" font-family="Arial">Goalkeeper</text>
+
+        <circle cx="196" cy="196" r="14" fill="#c01818" stroke="#c01818" stroke-width="0"/>
+        <text x="196" y="200" text-anchor="middle" font-size="10" fill="white" font-family="Arial" font-weight="700">LB</text>
+        <text x="196" y="216" text-anchor="middle" font-size="9" fill="#e8e0cc" font-family="Arial">Left back</text>
+
+        <circle cx="524" cy="196" r="14" fill="#c01818" stroke="#c01818" stroke-width="0"/>
+        <text x="524" y="200" text-anchor="middle" font-size="10" fill="white" font-family="Arial" font-weight="700">RB</text>
+        <text x="524" y="216" text-anchor="middle" font-size="9" fill="#e8e0cc" font-family="Arial">Right back</text>
+
+        <circle cx="238" cy="162" r="14" fill="#c01818" stroke="#c01818" stroke-width="0"/>
+        <text x="238" y="166" text-anchor="middle" font-size="10" fill="white" font-family="Arial" font-weight="700">CM</text>
+
+        <circle cx="360" cy="162" r="14" fill="#c01818" stroke="#c01818" stroke-width="0"/>
+        <text x="360" y="166" text-anchor="middle" font-size="10" fill="white" font-family="Arial" font-weight="700">CM</text>
+
+        <circle cx="482" cy="162" r="14" fill="#c01818" stroke="#c01818" stroke-width="0"/>
+        <text x="482" y="166" text-anchor="middle" font-size="10" fill="white" font-family="Arial" font-weight="700">CM</text>
+
+        <!-- BLUE players -->
+        <circle cx="178" cy="88" r="14" fill="#1a4ba8" stroke="#1a4ba8" stroke-width="0"/>
+        <text x="178" y="92" text-anchor="middle" font-size="10" fill="white" font-family="Arial" font-weight="700">LW</text>
+        <text x="178" y="108" text-anchor="middle" font-size="9" fill="#e8e0cc" font-family="Arial">Left wing</text>
+
+        <circle cx="360" cy="68" r="14" fill="#1a4ba8" stroke="#1a4ba8" stroke-width="0"/>
+        <text x="360" y="72" text-anchor="middle" font-size="10" fill="white" font-family="Arial" font-weight="700">ST</text>
+        <text x="360" y="88" text-anchor="middle" font-size="9" fill="#e8e0cc" font-family="Arial">Striker</text>
+
+        <circle cx="540" cy="88" r="14" fill="#1a4ba8" stroke="#1a4ba8" stroke-width="0"/>
+        <text x="540" y="92" text-anchor="middle" font-size="10" fill="white" font-family="Arial" font-weight="700">RW</text>
+        <text x="540" y="108" text-anchor="middle" font-size="9" fill="#e8e0cc" font-family="Arial">Right wing</text>
+
+        <!-- Ball -->
+        <circle cx="338" cy="172" r="7" fill="#ececec" stroke="#999" stroke-width="1"/>
+        <circle cx="338" cy="172" r="3" fill="#333"/>
+      </svg>
+    </div>
+    <div class="pitch-legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#c01818"></div>
+        Red: defending / pressing team
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#1a4ba8"></div>
+        Blue: attacking / building team
+      </div>
+      <div class="legend-item">
+        <div class="legend-line-move"></div>
+        Player run
+      </div>
+      <div class="legend-item">
+        <div class="legend-line-pass"></div>
+        Pass option
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT: Description > Setup > Organisation/Progressions > Coach notes -->
+  <div class="content-cols">
+
+    <div>
+      <div class="col-section">
+        <span class="sh">Description</span>
+        <ul class="blist">
+          <li>Red holds a <span class="kt">high defensive block</span> in the attacking half. Blue build from GK distribution.</li>
+          <li>Press triggered the moment the ball reaches the <span class="kt">centre back</span>. Nearest red striker leads at an angle, cutting off the square pass.</li>
+          <li>Blue must play through pressure using quick combinations. Full backs provide short outlet; striker drops as forward option.</li>
+          <li>On winning possession red transitions immediately into a <span class="kt">4-2 recovery shape</span>, both CMs dropping to cover.</li>
+        </ul>
+      </div>
+      <div class="col-section">
+        <span class="sh">Setup</span>
+        <ul class="blist">
+          <li>Mark a 30 x 40 m zone in one half.</li>
+          <li>Place 2 medium goals, one at each end.</li>
+          <li>6 spare balls behind each goal for quick restarts.</li>
+          <li>Red team in bibs. Blue team in contrasting bibs.</li>
+          <li>GK starts with ball every rep. Red team sets pressing shape before each restart.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      <div class="col-section">
+        <span class="sh">Organisation</span>
+        <div class="org-grid">
+          <div>
+            <div class="org-item-label">Area</div>
+            <div class="org-item-val">30 x 40 m</div>
+          </div>
+          <div>
+            <div class="org-item-label">Goals</div>
+            <div class="org-item-val">2 x medium</div>
+          </div>
+          <div>
+            <div class="org-item-label">Balls</div>
+            <div class="org-item-val">6 spare</div>
+          </div>
+          <div>
+            <div class="org-item-label">Rest</div>
+            <div class="org-item-val">90 sec between reps</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-section">
+        <span class="sh">Progressions</span>
+        <ul class="blist">
+          <li><span class="ktd">Easier:</span> allow GK to play long ball, removing the press decision.</li>
+          <li><span class="ktd">Standard:</span> press on CB touch as shown.</li>
+          <li><span class="ktd">Harder:</span> reduce red to 4 players, forcing tighter pressing angles.</li>
+          <li><span class="ktd">Game condition:</span> add a target striker for blue. Creates counter-press on turnover.</li>
+        </ul>
+      </div>
+      <div class="col-section">
+        <span class="sh">Coaching points</span>
+        <ul class="blist">
+          <li><span class="kt">Press leader (ST):</span> angle to cut off the square ball, not straight at the GK.</li>
+          <li><span class="kt">CMs:</span> follow immediately on trigger. No ball-watching.</li>
+          <li><span class="kt">GK:</span> call "press!" to trigger; "hold!" to delay.</li>
+          <li><span class="kt">Blue FBs:</span> first touch away from pressure, always facing forward.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DRILL NAVIGATION (screen only) -->
+  <div class="drill-nav">
+    <span class="nav-btn">&#8592; Prev</span>
+    <div class="nav-dots">
+      <div class="nav-dot"></div>
+      <div class="nav-dot"></div>
+      <div class="nav-dot active"></div>
+      <div class="nav-dot"></div>
+      <div class="nav-dot"></div>
+      <div class="nav-dot"></div>
+    </div>
+    <span class="nav-btn">Next &#8594;</span>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-txt">Bribie Island Tigers FC &middot; 2026</div>
+    <div class="footer-txt">Under 12s &middot; Week 4 &middot; Page 3 of 6</div>
+  </div>
+
+</div>
+</body>
+</html>

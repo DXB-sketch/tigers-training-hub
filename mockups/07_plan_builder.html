@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tigers — Plan Builder</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #e0ddd6; font-family: Arial, Helvetica, sans-serif; }
+
+/* TOP BAR */
+.top-bar {
+  background: #1a1a18;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 16px;
+  border-bottom: 1px solid #2e2e2a;
+}
+.tb-back {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #555; cursor: pointer;
+  text-decoration: none; flex-shrink: 0;
+}
+.tb-breadcrumb {
+  font-size: 11px; color: #666; flex: 1;
+}
+.tb-breadcrumb strong { color: #aaa; font-weight: 700; }
+.tb-actions { display: flex; gap: 0; margin-left: auto; }
+.tb-btn {
+  height: 52px; padding: 0 16px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #666;
+  background: none; border: none; border-left: 1px solid #2e2e2a;
+  cursor: pointer;
+}
+.tb-btn:hover { color: #aaa; background: #1e1e1c; }
+.tb-btn.publish { color: #1a1a18; background: #c88000; border-color: #c88000; }
+.tb-btn.publish:hover { background: #e0a000; }
+
+/* LAYOUT: left sidebar + main content */
+.builder-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: calc(100vh - 52px);
+}
+
+/* LEFT: plan structure sidebar */
+.plan-sidebar {
+  background: #1a1a18;
+  border-right: 1px solid #2e2e2a;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-section {
+  padding: 14px 16px;
+  border-bottom: 1px solid #2e2e2a;
+}
+.sidebar-section-label {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: #555; margin-bottom: 10px;
+}
+
+/* Plan meta fields */
+.meta-field { margin-bottom: 10px; }
+.meta-field label {
+  display: block; font-size: 8px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: #555; margin-bottom: 4px;
+}
+.meta-field input, .meta-field select {
+  display: block; width: 100%;
+  padding: 7px 9px; font-size: 12px; font-family: Arial;
+  background: #111110; color: #ccc;
+  border: 1px solid #2e2e2a; outline: none;
+}
+.meta-field input:focus, .meta-field select:focus { border-color: #c88000; }
+.meta-field input::placeholder { color: #444; }
+
+/* Drill list in sidebar */
+.drill-list {}
+.drill-item-sb {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid #2a2a26;
+  cursor: pointer;
+}
+.drill-item-sb:last-of-type { border-bottom: none; }
+.drill-item-sb:hover .dis-name { color: #fdfcf9; }
+
+.dis-num {
+  font-size: 16px; font-weight: 700;
+  color: #2e2e2a; min-width: 22px; line-height: 1;
+}
+.drill-item-sb.active .dis-num { color: #c88000; }
+
+.dis-body { flex: 1; min-width: 0; }
+.dis-name {
+  font-size: 12px; font-weight: 700; color: #888;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-bottom: 1px;
+}
+.drill-item-sb.active .dis-name { color: #fdfcf9; }
+.dis-meta { font-size: 10px; color: #444; }
+
+.dis-drag {
+  color: #2e2e2a; font-size: 14px; cursor: grab; flex-shrink: 0;
+}
+
+.add-drill-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #555;
+  cursor: pointer; border-top: 1px solid #2e2e2a;
+  background: none; width: 100%; border-left: none; border-right: none; border-bottom: none;
+}
+.add-drill-btn:hover { color: #c88000; }
+
+/* MAIN: drill editor */
+.drill-editor {
+  background: #fdfcf9;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Drill editor header */
+.de-header {
+  padding: 16px 24px 14px;
+  border-bottom: 2px solid #1a1a18;
+  display: flex; align-items: flex-end; justify-content: space-between;
+}
+.de-drill-num {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #c88000; margin-bottom: 4px;
+}
+.de-title-input {
+  font-size: 18px; font-weight: 700; color: #1a1a18;
+  background: none; border: none; outline: none;
+  border-bottom: 1.5px solid transparent;
+  padding-bottom: 2px; width: 100%;
+  font-family: Arial;
+}
+.de-title-input:focus { border-bottom-color: #c88000; }
+
+.de-meta-row {
+  display: flex; gap: 0;
+}
+.de-meta-field {
+  padding: 8px 20px 8px 0;
+  margin-right: 20px;
+  border-right: 1px solid #d8d4cc;
+}
+.de-meta-field:last-child { border-right: none; }
+.de-meta-label {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #bbb; margin-bottom: 3px;
+}
+.de-meta-input {
+  font-size: 13px; font-weight: 700; color: #1a1a18;
+  background: none; border: none; border-bottom: 1.5px solid transparent;
+  outline: none; font-family: Arial; width: 80px; padding: 0;
+}
+.de-meta-input:focus { border-bottom-color: #c88000; }
+
+/* PITCH AREA */
+.pitch-area {
+  padding: 16px 24px;
+  border-bottom: 1px solid #d8d4cc;
+  background: #f5f2eb;
+}
+.pitch-toolbar {
+  display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; align-items: center;
+}
+.pt-label {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #888; margin-right: 4px; flex-shrink: 0;
+}
+.pt-btn {
+  padding: 5px 10px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: #666;
+  background: #fdfcf9; border: 1.5px solid #d8d4cc;
+  cursor: pointer;
+}
+.pt-btn:hover { border-color: #1a1a18; color: #1a1a18; }
+.pt-btn.active { border-color: #1a1a18; background: #1a1a18; color: #c88000; }
+.pt-divider { width: 1px; height: 20px; background: #d8d4cc; flex-shrink: 0; }
+
+.pitch-editor-wrap {
+  border: 1px solid #aaa;
+  background: #2d5a1b;
+  position: relative;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+/* TEXT FIELDS for drill content */
+.drill-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  flex: 1;
+}
+.drill-field-col { padding: 16px 24px; }
+.drill-field-col + .drill-field-col { border-left: 1px solid #d8d4cc; }
+
+.field-section { margin-bottom: 18px; }
+.fs-label {
+  display: block;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #1a1a18;
+  border-bottom: 1.5px solid #c88000;
+  padding-bottom: 4px; margin-bottom: 8px;
+}
+.fs-textarea {
+  width: 100%;
+  padding: 8px 0;
+  font-size: 12px; line-height: 1.6;
+  color: #2a2a26; font-family: Arial;
+  background: none; border: none; outline: none;
+  resize: none;
+  min-height: 72px;
+}
+.fs-textarea::placeholder { color: #ccc; }
+.fs-textarea:focus { background: #fdf6e3; padding: 8px; margin: -8px; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <a class="tb-back">&#8592; Plans</a>
+  <div class="tb-breadcrumb">
+    Under 12s &nbsp;/&nbsp; <strong>Pressing &amp; Transition &mdash; Week 4</strong>
+  </div>
+  <div class="tb-actions">
+    <button class="tb-btn">Preview</button>
+    <button class="tb-btn">Save draft</button>
+    <button class="tb-btn publish">Publish</button>
+  </div>
+</div>
+
+<div class="builder-layout">
+
+  <!-- SIDEBAR: Plan structure -->
+  <div class="plan-sidebar">
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Plan details</div>
+      <div class="meta-field">
+        <label>Team</label>
+        <select><option>Under 12s</option></select>
+      </div>
+      <div class="meta-field">
+        <label>Week</label>
+        <input type="text" value="Week 4"/>
+      </div>
+      <div class="meta-field">
+        <label>Session title</label>
+        <input type="text" value="Pressing &amp; Transition"/>
+      </div>
+    </div>
+
+    <div class="sidebar-section" style="flex:1;overflow-y:auto">
+      <div class="sidebar-section-label">Drills &nbsp;(6)</div>
+      <div class="drill-list">
+        <div class="drill-item-sb">
+          <div class="dis-num">1</div>
+          <div class="dis-body">
+            <div class="dis-name">Warm-up &amp; dynamic</div>
+            <div class="dis-meta">10 min</div>
+          </div>
+          <div class="dis-drag">&#8597;</div>
+        </div>
+        <div class="drill-item-sb">
+          <div class="dis-num">2</div>
+          <div class="dis-body">
+            <div class="dis-name">Rondo 4v2</div>
+            <div class="dis-meta">10 min</div>
+          </div>
+          <div class="dis-drag">&#8597;</div>
+        </div>
+        <div class="drill-item-sb active">
+          <div class="dis-num">3</div>
+          <div class="dis-body">
+            <div class="dis-name">High Press Trigger</div>
+            <div class="dis-meta">15 min &nbsp;&middot;&nbsp; 9v5</div>
+          </div>
+          <div class="dis-drag">&#8597;</div>
+        </div>
+        <div class="drill-item-sb">
+          <div class="dis-num">4</div>
+          <div class="dis-body">
+            <div class="dis-name">Transition 6v6+GK</div>
+            <div class="dis-meta">20 min</div>
+          </div>
+          <div class="dis-drag">&#8597;</div>
+        </div>
+        <div class="drill-item-sb">
+          <div class="dis-num">5</div>
+          <div class="dis-body">
+            <div class="dis-name">Cool-down &amp; debrief</div>
+            <div class="dis-meta">5 min</div>
+          </div>
+          <div class="dis-drag">&#8597;</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="add-drill-btn">
+      <span style="font-size:16px;line-height:1">+</span> Add drill
+    </button>
+
+  </div>
+
+  <!-- MAIN: Drill editor -->
+  <div class="drill-editor">
+
+    <div class="de-header">
+      <div style="flex:1">
+        <div class="de-drill-num">Drill 3 of 5</div>
+        <input class="de-title-input" value="High Press Trigger: Shape &amp; Recover"/>
+      </div>
+    </div>
+
+    <div style="border-bottom:1px solid #d8d4cc; display:flex; padding:0 24px;">
+      <div class="de-meta-field">
+        <div class="de-meta-label">Category</div>
+        <input class="de-meta-input" value="Technical" style="width:120px"/>
+      </div>
+      <div class="de-meta-field">
+        <div class="de-meta-label">Duration</div>
+        <input class="de-meta-input" value="15 min"/>
+      </div>
+      <div class="de-meta-field">
+        <div class="de-meta-label">Format</div>
+        <input class="de-meta-input" value="9 v 5"/>
+      </div>
+      <div class="de-meta-field">
+        <div class="de-meta-label">Intensity</div>
+        <input class="de-meta-input" value="High"/>
+      </div>
+    </div>
+
+    <!-- PITCH TOOLBAR + EDITOR -->
+    <div class="pitch-area">
+      <div class="pitch-toolbar">
+        <span class="pt-label">Players:</span>
+        <button class="pt-btn active">&#9679; Red</button>
+        <button class="pt-btn">&#9679; Blue</button>
+        <div class="pt-divider"></div>
+        <span class="pt-label">Elements:</span>
+        <button class="pt-btn">Ball</button>
+        <button class="pt-btn">Cone</button>
+        <button class="pt-btn">Run &#8594;</button>
+        <button class="pt-btn">Pass &hellip;</button>
+        <button class="pt-btn">Zone</button>
+        <div class="pt-divider"></div>
+        <span class="pt-label">Goal:</span>
+        <button class="pt-btn">Mini</button>
+        <button class="pt-btn active">Medium</button>
+        <button class="pt-btn">Full</button>
+        <div class="pt-divider"></div>
+        <span class="pt-label">Labels:</span>
+        <button class="pt-btn active">Position</button>
+        <button class="pt-btn">Name</button>
+        <button class="pt-btn">None</button>
+        <div class="pt-divider"></div>
+        <span class="pt-label">Pitch crop:</span>
+        <button class="pt-btn">Half</button>
+        <button class="pt-btn active">Third</button>
+        <button class="pt-btn">Custom</button>
+      </div>
+
+      <!-- Pitch preview (cropped one-third zone) -->
+      <div class="pitch-editor-wrap">
+        <svg viewBox="0 0 720 220" width="100%" xmlns="http://www.w3.org/2000/svg" style="display:block">
+          <defs>
+            <marker id="aM2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+              <path d="M1 2 L8 5 L1 8" fill="none" stroke="#f0a500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </marker>
+          </defs>
+          <rect width="720" height="220" fill="#2d5a1b"/>
+          <rect x="14" y="14" width="692" height="192" fill="none" stroke="#a8d880" stroke-width="1" opacity="0.45"/>
+          <rect x="232" y="14" width="256" height="76" fill="none" stroke="#a8d880" stroke-width="0.8" opacity="0.4"/>
+          <rect x="296" y="4" width="128" height="12" fill="#3a7525" stroke="#fff" stroke-width="2"/>
+          <line x1="296" y="4" x2="296" y2="16" stroke="#fff" stroke-width="2"/>
+          <line x1="424" y="4" x2="424" y2="16" stroke="#fff" stroke-width="2"/>
+          <line x1="296" y="16" x2="424" y2="16" stroke="#fff" stroke-width="2"/>
+
+          <!-- Ghost label: click to place -->
+          <rect x="60" y="80" width="140" height="60" fill="rgba(240,165,0,0.06)" stroke="#c88000" stroke-width="1" stroke-dasharray="5,3"/>
+          <text x="130" y="114" text-anchor="middle" font-size="11" fill="#c88000" font-family="Arial" font-weight="700" opacity="0.6">Click to place element</text>
+
+          <!-- Some placed players -->
+          <circle cx="360" cy="180" r="13" fill="#c01818"/>
+          <text x="360" y="184" text-anchor="middle" font-size="9" fill="white" font-family="Arial" font-weight="700">GK</text>
+          <circle cx="200" cy="150" r="13" fill="#c01818"/>
+          <text x="200" y="154" text-anchor="middle" font-size="9" fill="white" font-family="Arial" font-weight="700">LB</text>
+          <circle cx="520" cy="150" r="13" fill="#c01818"/>
+          <text x="520" y="154" text-anchor="middle" font-size="9" fill="white" font-family="Arial" font-weight="700">RB</text>
+          <circle cx="360" cy="120" r="13" fill="#c01818"/>
+          <text x="360" y="124" text-anchor="middle" font-size="9" fill="white" font-family="Arial" font-weight="700">CM</text>
+          <circle cx="240" cy="80" r="13" fill="#1a4ba8"/>
+          <text x="240" y="84" text-anchor="middle" font-size="9" fill="white" font-family="Arial" font-weight="700">ST</text>
+          <circle cx="480" cy="80" r="13" fill="#1a4ba8"/>
+          <text x="480" y="84" text-anchor="middle" font-size="9" fill="white" font-family="Arial" font-weight="700">ST</text>
+
+          <path d="M360 160 Q320 130 240 100" fill="none" stroke="#f0a500" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#aM2)"/>
+
+          <!-- Selected player indicator -->
+          <circle cx="360" cy="120" r="16" fill="none" stroke="#c88000" stroke-width="2"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- DRILL TEXT CONTENT -->
+    <div class="drill-fields">
+      <div class="drill-field-col">
+        <div class="field-section">
+          <span class="fs-label">Description</span>
+          <textarea class="fs-textarea" rows="4" placeholder="Describe what happens in this drill...">Red team holds a high defensive block in the attacking half. Press triggers on CB touch. Blue must play through pressure using combinations.</textarea>
+        </div>
+        <div class="field-section">
+          <span class="fs-label">Setup</span>
+          <textarea class="fs-textarea" rows="3" placeholder="How do coaches and players set this up?">Mark 30 x 40m zone in one half. 2 medium goals. 6 spare balls behind each goal. Red in bibs, GK starts with ball.</textarea>
+        </div>
+      </div>
+      <div class="drill-field-col">
+        <div class="field-section">
+          <span class="fs-label">Organisation</span>
+          <textarea class="fs-textarea" rows="2" placeholder="Area, goals, equipment...">Area: 30x40m &nbsp; Goals: 2x medium &nbsp; Balls: 6 spare &nbsp; Rest: 90 sec between reps</textarea>
+        </div>
+        <div class="field-section">
+          <span class="fs-label">Progressions</span>
+          <textarea class="fs-textarea" rows="3" placeholder="How does the drill progress or regress?">Easier: GK plays long. Standard: press on CB touch. Harder: reduce red to 4.</textarea>
+        </div>
+        <div class="field-section">
+          <span class="fs-label">Coaching points</span>
+          <textarea class="fs-textarea" rows="3" placeholder="What should the coach watch for and say?">ST: angle to cut off square ball. CMs: follow immediately. GK: call "press!" on trigger.</textarea>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tigers — Training Plans</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #e0ddd6; font-family: Arial, Helvetica, sans-serif; }
+
+.top-nav {
+  background: #1a1a18; height: 52px;
+  display: flex; align-items: center; padding: 0 24px;
+}
+.nav-club { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #c88000; margin-right: 36px; }
+.nav-links { display: flex; height: 100%; }
+.nav-link { height: 100%; display: flex; align-items: center; padding: 0 18px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #666; cursor: pointer; border-bottom: 2px solid transparent; text-decoration: none; }
+.nav-link.active { color: #fdfcf9; border-bottom-color: #c88000; }
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+.nav-role { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #c88000; padding: 3px 8px; border: 1px solid #2e2e2a; }
+
+.page-head {
+  background: #fdfcf9; padding: 20px 24px 16px;
+  border-bottom: 2.5px solid #1a1a18;
+  display: flex; align-items: flex-end; justify-content: space-between;
+}
+.page-title { font-size: 20px; font-weight: 700; color: #1a1a18; margin-bottom: 2px; }
+.page-sub { font-size: 12px; color: #777; }
+.new-btn { background: #1a1a18; color: #c88000; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 18px; border: none; cursor: pointer; }
+
+/* FILTER BAR */
+.filter-bar {
+  background: #fdfcf9;
+  border-bottom: 1px solid #d8d4cc;
+  padding: 12px 24px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.filter-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #bbb; flex-shrink: 0;
+}
+.filter-select {
+  padding: 6px 10px; font-size: 12px; font-family: Arial;
+  border: 1.5px solid #d8d4cc; background: #fdfcf9;
+  color: #1a1a18; outline: none; cursor: pointer;
+}
+.filter-select:focus { border-color: #c88000; }
+.filter-divider { width: 1px; height: 20px; background: #d8d4cc; flex-shrink: 0; }
+.filter-search {
+  flex: 1; min-width: 160px;
+  padding: 6px 10px; font-size: 12px; font-family: Arial;
+  border: 1.5px solid #d8d4cc; background: #fdfcf9;
+  color: #1a1a18; outline: none;
+}
+.filter-search:focus { border-color: #c88000; }
+.filter-search::placeholder { color: #bbb; }
+
+/* PLAN LIST */
+.plans-list { background: #fdfcf9; }
+
+.plan-item {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 0 16px;
+  align-items: center;
+  padding: 14px 24px;
+  border-bottom: 1px solid #eeebe4;
+  cursor: pointer;
+  transition: background 0.1s;
+  text-decoration: none;
+  color: inherit;
+}
+.plan-item:hover { background: #f7f5ef; }
+.plan-item:last-child { border-bottom: none; }
+
+.pi-week {
+  font-size: 28px;
+  font-weight: 700;
+  color: #d8d4cc;
+  line-height: 1;
+  text-align: right;
+}
+.pi-body {}
+.pi-team {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #c88000; margin-bottom: 3px;
+}
+.pi-name {
+  font-size: 14px; font-weight: 700; color: #1a1a18; margin-bottom: 3px;
+}
+.pi-meta { font-size: 11px; color: #888; }
+
+.pi-right {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+}
+.status-pill {
+  display: inline-block; padding: 3px 9px;
+  font-size: 8px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.s-ok { background: #e6f0dc; color: #2a5e10; }
+.s-warn { background: #fdf4dc; color: #7a4e00; }
+.s-err { background: #fce8e8; color: #8a1c1c; }
+
+.pi-action {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #c88000;
+}
+
+/* WEEK DIVIDERS */
+.week-divider {
+  padding: 10px 24px 6px;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: #888;
+  background: #f0ede6;
+  border-bottom: 1px solid #d8d4cc;
+  border-top: 1px solid #d8d4cc;
+}
+</style>
+</head>
+<body>
+
+<div class="top-nav">
+  <div class="nav-club">Bribie Tigers</div>
+  <div class="nav-links">
+    <a class="nav-link">Dashboard</a>
+    <a class="nav-link">Teams</a>
+    <a class="nav-link active">Training Plans</a>
+  </div>
+  <div class="nav-right">
+    <span style="font-size:11px;color:#555">Sarah Admin</span>
+    <span class="nav-role">Admin</span>
+  </div>
+</div>
+
+<div class="page-head">
+  <div>
+    <div class="page-title">Training Plans</div>
+    <div class="page-sub">All sessions across every team</div>
+  </div>
+  <button class="new-btn">+ New plan</button>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">Filter</span>
+  <select class="filter-select">
+    <option>All teams</option>
+    <option>Under 6s</option>
+    <option>Under 8s</option>
+    <option>Under 10s</option>
+    <option selected>Under 12s</option>
+    <option>Under 14s</option>
+    <option>Under 16s</option>
+    <option>Senior Men's</option>
+    <option>Senior Women's</option>
+  </select>
+  <select class="filter-select">
+    <option>All weeks</option>
+    <option>Week 4 (current)</option>
+    <option>Week 3</option>
+    <option>Week 2</option>
+    <option>Week 1</option>
+  </select>
+  <select class="filter-select">
+    <option>All statuses</option>
+    <option>Published</option>
+    <option>Draft</option>
+  </select>
+  <div class="filter-divider"></div>
+  <input class="filter-search" type="text" placeholder="Search plans..."/>
+</div>
+
+<div class="plans-list">
+
+  <div class="week-divider">Week 4 &mdash; Current</div>
+
+  <a class="plan-item">
+    <div class="pi-week">4</div>
+    <div class="pi-body">
+      <div class="pi-team">Under 12s</div>
+      <div class="pi-name">Pressing &amp; Transition</div>
+      <div class="pi-meta">6 drills &nbsp;&middot;&nbsp; 60 min &nbsp;&middot;&nbsp; Created 2 Jun 2026 &nbsp;&middot;&nbsp; Mark Thompson</div>
+    </div>
+    <div class="pi-right">
+      <span class="status-pill s-ok">Published</span>
+      <span class="pi-action">Open</span>
+    </div>
+  </a>
+
+  <a class="plan-item">
+    <div class="pi-week">4</div>
+    <div class="pi-body">
+      <div class="pi-team">Senior Women's</div>
+      <div class="pi-name">Wide Play &amp; Crossing</div>
+      <div class="pi-meta">5 drills &nbsp;&middot;&nbsp; 75 min &nbsp;&middot;&nbsp; Created 1 Jun 2026 &nbsp;&middot;&nbsp; Amy Park</div>
+    </div>
+    <div class="pi-right">
+      <span class="status-pill s-ok">Published</span>
+      <span class="pi-action">Open</span>
+    </div>
+  </a>
+
+  <a class="plan-item">
+    <div class="pi-week">4</div>
+    <div class="pi-body">
+      <div class="pi-team">Under 10s</div>
+      <div class="pi-name">Passing Combinations</div>
+      <div class="pi-meta">4 drills &nbsp;&middot;&nbsp; 55 min &nbsp;&middot;&nbsp; Last edited 3 Jun 2026 &nbsp;&middot;&nbsp; Lisa Roberts</div>
+    </div>
+    <div class="pi-right">
+      <span class="status-pill s-warn">Draft</span>
+      <span class="pi-action">Edit</span>
+    </div>
+  </a>
+
+  <a class="plan-item">
+    <div class="pi-week">4</div>
+    <div class="pi-body">
+      <div class="pi-team">Senior Men's</div>
+      <div class="pi-name">Shape &amp; Press</div>
+      <div class="pi-meta">7 drills &nbsp;&middot;&nbsp; 90 min &nbsp;&middot;&nbsp; Created 31 May 2026 &nbsp;&middot;&nbsp; Phil Santos</div>
+    </div>
+    <div class="pi-right">
+      <span class="status-pill s-ok">Published</span>
+      <span class="pi-action">Open</span>
+    </div>
+  </a>
+
+  <div class="week-divider">Week 3</div>
+
+  <a class="plan-item">
+    <div class="pi-week">3</div>
+    <div class="pi-body">
+      <div class="pi-team">Under 12s</div>
+      <div class="pi-name">Possession &amp; Rondo</div>
+      <div class="pi-meta">5 drills &nbsp;&middot;&nbsp; 60 min &nbsp;&middot;&nbsp; Created 25 May 2026 &nbsp;&middot;&nbsp; Mark Thompson</div>
+    </div>
+    <div class="pi-right">
+      <span class="status-pill s-ok">Published</span>
+      <span class="pi-action">Open</span>
+    </div>
+  </a>
+
+  <a class="plan-item">
+    <div class="pi-week">3</div>
+    <div class="pi-body">
+      <div class="pi-team">Senior Women's</div>
+      <div class="pi-name">Set Pieces &amp; Corners</div>
+      <div class="pi-meta">4 drills &nbsp;&middot;&nbsp; 65 min &nbsp;&middot;&nbsp; Created 24 May 2026 &nbsp;&middot;&nbsp; Amy Park</div>
+    </div>
+    <div class="pi-right">
+      <span class="status-pill s-ok">Published</span>
+      <span class="pi-action">Open</span>
+    </div>
+  </a>
+
+</div>
+
+</body>
+</html>

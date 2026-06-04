@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tigers — Team Management</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #e0ddd6; font-family: Arial, Helvetica, sans-serif; }
+
+.top-nav {
+  background: #1a1a18; height: 52px;
+  display: flex; align-items: center; padding: 0 24px; gap: 0;
+}
+.nav-club {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: #c88000; margin-right: 36px;
+}
+.nav-links { display: flex; height: 100%; }
+.nav-link {
+  height: 100%; display: flex; align-items: center; padding: 0 18px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #666; cursor: pointer;
+  border-bottom: 2px solid transparent; text-decoration: none;
+}
+.nav-link.active { color: #fdfcf9; border-bottom-color: #c88000; }
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+.nav-role {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #c88000; padding: 3px 8px;
+  border: 1px solid #2e2e2a;
+}
+
+.page-head {
+  background: #fdfcf9; padding: 20px 24px 16px;
+  border-bottom: 2.5px solid #1a1a18;
+  display: flex; align-items: flex-end; justify-content: space-between;
+}
+.page-title { font-size: 20px; font-weight: 700; color: #1a1a18; margin-bottom: 2px; }
+.page-sub { font-size: 12px; color: #777; }
+.add-btn {
+  background: #1a1a18; color: #c88000;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; padding: 10px 18px;
+  border: none; cursor: pointer;
+}
+
+/* TEAM DETAIL PANEL - selected team on right (desktop split) */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 0;
+  min-height: calc(100vh - 120px);
+}
+
+/* LEFT: team list */
+.team-list { background: #fdfcf9; border-right: 1px solid #d8d4cc; }
+
+.team-list-head {
+  padding: 10px 24px 8px;
+  font-size: 8px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #bbb;
+  border-bottom: 1px solid #d8d4cc;
+  display: grid;
+  grid-template-columns: 2fr 2fr 1.5fr 1fr 60px;
+  gap: 12px;
+}
+
+.team-row {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1.5fr 1fr 60px;
+  gap: 12px;
+  align-items: center;
+  padding: 13px 24px;
+  border-bottom: 1px solid #eeebe4;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.team-row:hover { background: #f7f5ef; }
+.team-row.selected { background: #fdf6e3; }
+.team-row:last-child { border-bottom: none; }
+
+.tr-name { font-size: 13px; font-weight: 700; color: #1a1a18; }
+.tr-coach { font-size: 12px; color: #444; }
+.tr-no-coach { font-size: 12px; color: #bbb; font-style: italic; }
+.tr-plan { font-size: 11px; color: #666; }
+.tr-no-plan { font-size: 11px; color: #bbb; }
+
+.status-pill {
+  display: inline-block; padding: 3px 8px;
+  font-size: 8px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.s-ok { background: #e6f0dc; color: #2a5e10; }
+.s-warn { background: #fdf4dc; color: #7a4e00; }
+.s-err { background: #fce8e8; color: #8a1c1c; }
+
+.tr-action {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #c88000; cursor: pointer;
+}
+
+/* RIGHT: detail panel */
+.detail-panel {
+  background: #fdfcf9;
+  border-left: 1px solid #d8d4cc;
+}
+
+.dp-header {
+  padding: 20px 20px 16px;
+  border-bottom: 2px solid #1a1a18;
+}
+.dp-team-name {
+  font-size: 18px; font-weight: 700; color: #1a1a18; margin-bottom: 3px;
+}
+.dp-edit-btn {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #c88000; cursor: pointer;
+}
+
+.dp-section { padding: 14px 20px; border-bottom: 1px solid #eeebe4; }
+
+.dp-section-label {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #bbb; margin-bottom: 8px;
+}
+
+.dp-field { margin-bottom: 10px; }
+.dp-field-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #aaa; margin-bottom: 3px;
+}
+.dp-field-val { font-size: 13px; font-weight: 700; color: #1a1a18; }
+.dp-field-val.secondary { font-weight: 400; color: #444; }
+.dp-field-val.muted { color: #bbb; font-style: italic; }
+
+.dp-assign-btn {
+  display: block; width: 100%; padding: 11px;
+  background: #1a1a18; color: #c88000;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; border: none; cursor: pointer;
+  margin-top: 6px;
+}
+.dp-assign-btn.secondary {
+  background: #fdfcf9; color: #1a1a18;
+  border: 1.5px solid #1a1a18;
+  margin-top: 8px;
+}
+
+@media (max-width: 700px) {
+  .layout { grid-template-columns: 1fr; }
+  .detail-panel { display: none; }
+  .team-list-head { display: none; }
+  .team-row { grid-template-columns: 1fr auto; }
+  .team-row > *:not(:first-child):not(:last-child) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-nav">
+  <div class="nav-club">Bribie Tigers</div>
+  <div class="nav-links">
+    <a class="nav-link">Dashboard</a>
+    <a class="nav-link active">Teams</a>
+    <a class="nav-link">Training Plans</a>
+  </div>
+  <div class="nav-right">
+    <span style="font-size:11px;color:#555">Sarah Admin</span>
+    <span class="nav-role">Admin</span>
+  </div>
+</div>
+
+<div class="page-head">
+  <div>
+    <div class="page-title">Teams</div>
+    <div class="page-sub">Manage coaches, contacts and plan assignments</div>
+  </div>
+  <button class="add-btn">+ Add team</button>
+</div>
+
+<div class="layout">
+
+  <!-- TEAM LIST -->
+  <div class="team-list">
+    <div class="team-list-head">
+      <span>Team</span>
+      <span>Coach</span>
+      <span>Current plan</span>
+      <span>Status</span>
+      <span></span>
+    </div>
+
+    <div class="team-row"><div class="tr-name">Under 6s</div><div class="tr-coach">Jane Cooper</div><div class="tr-plan">Fun fundamentals Wk 4</div><div><span class="status-pill s-ok">Live</span></div><div class="tr-action">Edit</div></div>
+    <div class="team-row"><div class="tr-name">Under 8s</div><div class="tr-coach">Dave Walsh</div><div class="tr-plan">Dribbling &amp; turns Wk 4</div><div><span class="status-pill s-ok">Live</span></div><div class="tr-action">Edit</div></div>
+    <div class="team-row"><div class="tr-name">Under 10s</div><div class="tr-coach">Lisa Roberts</div><div class="tr-plan">Passing combos Wk 4</div><div><span class="status-pill s-warn">Draft</span></div><div class="tr-action">Edit</div></div>
+    <div class="team-row selected"><div class="tr-name">Under 12s</div><div class="tr-coach">Mark Thompson</div><div class="tr-plan">Pressing Wk 4</div><div><span class="status-pill s-ok">Live</span></div><div class="tr-action">Edit</div></div>
+    <div class="team-row"><div class="tr-name">Under 14s</div><div class="tr-coach">Tony Briggs</div><div class="tr-no-plan">No plan assigned</div><div><span class="status-pill s-warn">No plan</span></div><div class="tr-action">Assign</div></div>
+    <div class="team-row"><div class="tr-name">Under 16s</div><div class="tr-no-coach">Unassigned</div><div class="tr-no-plan">&mdash;</div><div><span class="status-pill s-err">No coach</span></div><div class="tr-action">Fix</div></div>
+    <div class="team-row"><div class="tr-name">Senior Men's</div><div class="tr-coach">Phil Santos</div><div class="tr-plan">Shape &amp; press Wk 4</div><div><span class="status-pill s-ok">Live</span></div><div class="tr-action">Edit</div></div>
+    <div class="team-row"><div class="tr-name">Senior Women's</div><div class="tr-coach">Amy Park</div><div class="tr-plan">Wide play Wk 4</div><div><span class="status-pill s-ok">Live</span></div><div class="tr-action">Edit</div></div>
+  </div>
+
+  <!-- DETAIL PANEL: Under 12s selected -->
+  <div class="detail-panel">
+    <div class="dp-header">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div class="dp-team-name">Under 12s</div>
+        <span class="dp-edit-btn">Edit team</span>
+      </div>
+    </div>
+
+    <div class="dp-section">
+      <div class="dp-section-label">Coach</div>
+      <div class="dp-field">
+        <div class="dp-field-label">Name</div>
+        <div class="dp-field-val">Mark Thompson</div>
+      </div>
+      <div class="dp-field">
+        <div class="dp-field-label">Email</div>
+        <div class="dp-field-val secondary">mark.t@email.com.au</div>
+      </div>
+      <div class="dp-field">
+        <div class="dp-field-label">Phone</div>
+        <div class="dp-field-val secondary">0412 345 678</div>
+      </div>
+    </div>
+
+    <div class="dp-section">
+      <div class="dp-section-label">Current plan</div>
+      <div class="dp-field">
+        <div class="dp-field-label">Assigned</div>
+        <div class="dp-field-val">Pressing &amp; Transition &mdash; Week 4</div>
+      </div>
+      <div class="dp-field">
+        <div class="dp-field-label">Status</div>
+        <div class="dp-field-val"><span class="status-pill s-ok">Published</span></div>
+      </div>
+      <div class="dp-field">
+        <div class="dp-field-label">Drills</div>
+        <div class="dp-field-val secondary">6 drills &nbsp;&middot;&nbsp; 60 min</div>
+      </div>
+      <button class="dp-assign-btn">View plan</button>
+      <button class="dp-assign-btn secondary">Change plan</button>
+    </div>
+
+    <div class="dp-section">
+      <div class="dp-section-label">Team details</div>
+      <div class="dp-field">
+        <div class="dp-field-label">Age group</div>
+        <div class="dp-field-val secondary">Under 12s (born 2014&ndash;2015)</div>
+      </div>
+      <div class="dp-field">
+        <div class="dp-field-label">Training day</div>
+        <div class="dp-field-val secondary">Wednesdays, 5:30 pm</div>
+      </div>
+      <div class="dp-field">
+        <div class="dp-field-label">Registered players</div>
+        <div class="dp-field-val secondary">16 players</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
