@@ -55,7 +55,7 @@ export default function TopNav() {
       </div>
       <div className="nav-right">
         <span className="nav-user">{user?.name}</span>
-        <span className="nav-role">Admin</span>
+        <span className="nav-role">{role === 'president' ? 'President' : 'Admin'}</span>
         <button className="nav-signout" onClick={handleLogout}>
           Sign out
         </button>

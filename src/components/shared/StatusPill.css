@@ -36,3 +36,18 @@
   background: var(--status-ok-bg);
   color: var(--status-ok-text);
 }
+
+.status-pill--president {
+  background: var(--status-err-bg);
+  color: var(--status-err-text);
+}
+
+.status-pill--admin {
+  background: var(--status-warn-bg);
+  color: var(--status-warn-text);
+}
+
+.status-pill--coach {
+  background: var(--status-ok-bg);
+  color: var(--status-ok-text);
+}

@@ -328,6 +328,29 @@
   flex-shrink: 0;
 }
 
+.pitch-toolbar--zone-colors {
+  margin-top: 0;
+  margin-bottom: 8px;
+  padding-top: 0;
+}
+
+.pt-color-btn {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.pt-color-btn.active {
+  border-color: var(--ink);
+}
+
+.pt-color-btn--gold { background: var(--tigers-gold); }
+.pt-color-btn--red  { background: var(--player-red); }
+.pt-color-btn--blue { background: var(--player-blue); }
+
 .pitch-editor-wrap {
   border: 1px solid #aaa;
   background: var(--pitch-green);

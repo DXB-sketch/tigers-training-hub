@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import supabase from '../lib/supabase'
 import './Login.css'
 
 export default function Login() {
@@ -11,9 +12,16 @@ export default function Login() {
   const { login, role } = useAuth()
   const navigate = useNavigate()
 
+  const [forgotMode, setForgotMode] = useState(false)
+  const [resetEmail, setResetEmail] = useState('')
+  const [resetMsg, setResetMsg] = useState('')
+  const [resetError, setResetError] = useState('')
+
   useEffect(() => {
     if (loggedIn && role) {
-      navigate(role === 'admin' ? '/admin' : '/coach')
+      if (role === 'admin') navigate('/admin')
+      else if (role === 'president') navigate('/president')
+      else navigate('/coach')
     }
   }, [loggedIn, role])
 
@@ -28,6 +36,18 @@ export default function Login() {
     }
   }
 
+  async function handleResetSubmit(e) {
+    e.preventDefault()
+    setResetError('')
+    setResetMsg('')
+    const { error: err } = await supabase.auth.resetPasswordForEmail(resetEmail)
+    if (err) {
+      setResetError(err.message)
+    } else {
+      setResetMsg('If an account exists for that email, a reset link has been sent.')
+    }
+  }
+
   return (
     <div className="login-body">
       <div className="login-wrap">
@@ -38,41 +58,82 @@ export default function Login() {
         </div>
 
         <div className="form-card">
-          <div className="form-title">Sign in</div>
-          <div className="form-sub">Enter your credentials to access training plans</div>
+          {forgotMode ? (
+            <>
+              <div className="form-title">Reset password</div>
+              <div className="form-sub">Enter your email address to receive a reset link</div>
 
-          <form onSubmit={handleSubmit}>
-            <div className="form-field">
-              <label htmlFor="email">Email address</label>
-              <input
-                id="email"
-                type="email"
-                placeholder="you@tigers.com.au"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                autoComplete="email"
-              />
-            </div>
-            <div className="form-field">
-              <label htmlFor="password">Password</label>
-              <input
-                id="password"
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                autoComplete="current-password"
-              />
-            </div>
+              {resetMsg ? (
+                <p className="form-note">{resetMsg}</p>
+              ) : (
+                <form onSubmit={handleResetSubmit}>
+                  <div className="form-field">
+                    <label htmlFor="reset-email">Email address</label>
+                    <input
+                      id="reset-email"
+                      type="email"
+                      placeholder="you@tigers.com.au"
+                      value={resetEmail}
+                      onChange={e => setResetEmail(e.target.value)}
+                      autoComplete="email"
+                    />
+                  </div>
+                  {resetError && <div className="form-error">{resetError}</div>}
+                  <button type="submit" className="sign-in-btn">Send reset link</button>
+                </form>
+              )}
 
-            {error && <div className="form-error">{error}</div>}
+              <button
+                type="button"
+                className="forgot-link"
+                onClick={() => { setForgotMode(false); setResetEmail(''); setResetMsg(''); setResetError('') }}
+              >
+                Back to login
+              </button>
+            </>
+          ) : (
+            <>
+              <div className="form-title">Sign in</div>
+              <div className="form-sub">Enter your credentials to access training plans</div>
 
-            <button type="submit" className="sign-in-btn">Sign in</button>
-          </form>
+              <form onSubmit={handleSubmit}>
+                <div className="form-field">
+                  <label htmlFor="email">Email address</label>
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="you@tigers.com.au"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    autoComplete="email"
+                  />
+                </div>
+                <div className="form-field">
+                  <label htmlFor="password">Password</label>
+                  <input
+                    id="password"
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    autoComplete="current-password"
+                  />
+                </div>
 
-          <p className="form-note">
-            Contact your administrator if you need access or have forgotten your password.
-          </p>
+                {error && <div className="form-error">{error}</div>}
+
+                <button type="submit" className="sign-in-btn">Sign in</button>
+              </form>
+
+              <button
+                type="button"
+                className="forgot-link"
+                onClick={() => setForgotMode(true)}
+              >
+                Forgot password?
+              </button>
+            </>
+          )}
         </div>
 
         <div className="role-strip">

@@ -1,5 +1,46 @@
 import { useRef } from 'react'
 
+function ZoneShape({ zone, interactive, onContextMenu }) {
+  const stroke = zone.color === 'gold' ? 'var(--tigers-gold)'
+    : zone.color === 'red' ? 'var(--player-red)'
+    : 'var(--player-blue)'
+  const ctxMenu = interactive
+    ? e => { e.preventDefault(); onContextMenu?.(e, zone.id, 'elements') }
+    : undefined
+
+  if (zone.type === 'zone-circle') {
+    return (
+      <g onContextMenu={ctxMenu}>
+        <circle cx={zone.cx} cy={zone.cy} r={zone.r}
+          fill="none" strokeWidth={2} strokeDasharray="8 4" opacity={0.7}
+          style={{ stroke, pointerEvents: 'none' }}
+        />
+        {interactive && (
+          <circle cx={zone.cx} cy={zone.cy} r={zone.r}
+            fill="transparent" style={{ pointerEvents: 'all', cursor: 'context-menu' }}
+          />
+        )}
+      </g>
+    )
+  }
+  if (zone.type === 'zone-rect') {
+    return (
+      <g onContextMenu={ctxMenu}>
+        <rect x={zone.x} y={zone.y} width={zone.width} height={zone.height}
+          fill="none" strokeWidth={2} strokeDasharray="8 4" opacity={0.7}
+          style={{ stroke, pointerEvents: 'none' }}
+        />
+        {interactive && (
+          <rect x={zone.x} y={zone.y} width={zone.width} height={zone.height}
+            fill="transparent" style={{ pointerEvents: 'all', cursor: 'context-menu' }}
+          />
+        )}
+      </g>
+    )
+  }
+  return null
+}
+
 // Arrow colors are SVG-specific fixed values per DESIGN.md (not in tokens.css)
 const ARROW_MOVE = '#f0a500'
 const ARROW_PASS = '#4477cc'
@@ -240,6 +281,7 @@ export default function PitchCanvas({
   arrowStart,
   previewLine,
   labelEditor,
+  zoneDrawing,
   onSvgClick,
   onSvgMouseDown,
   onSvgMouseMove,
@@ -302,15 +344,32 @@ export default function PitchCanvas({
 
       <PitchMarkings crop={resolvedCrop} goalWidth={goalWidth} />
 
-      {safeElements.map(el => (
-        <Element
-          key={el.id}
-          el={el}
-          interactive={interactive}
-          onMouseDown={e => onElementMouseDown?.(e, el)}
-          onContextMenu={e => { e.preventDefault(); onContextMenu?.(e, el.id, 'elements') }}
-        />
-      ))}
+      {/* Zone elements render first (background layer) */}
+      {safeElements
+        .filter(el => el.type === 'zone-circle' || el.type === 'zone-rect')
+        .map(el => (
+          <ZoneShape
+            key={el.id}
+            zone={el}
+            interactive={interactive}
+            onContextMenu={onContextMenu}
+          />
+        ))
+      }
+
+      {/* Non-zone elements (cones, balls, zone ellipse) */}
+      {safeElements
+        .filter(el => el.type !== 'zone-circle' && el.type !== 'zone-rect')
+        .map(el => (
+          <Element
+            key={el.id}
+            el={el}
+            interactive={interactive}
+            onMouseDown={e => onElementMouseDown?.(e, el)}
+            onContextMenu={e => { e.preventDefault(); onContextMenu?.(e, el.id, 'elements') }}
+          />
+        ))
+      }
 
       {safeArrows.map(arrow => (
         <Arrow
@@ -332,9 +391,36 @@ export default function PitchCanvas({
           name={p.name}
           interactive={interactive}
           onMouseDown={e => onPlayerMouseDown?.(e, p)}
-          onContextMenu={e => { e.preventDefault(); onContextMenu?.(e, p.id, 'players') }}
+          onContextMenu={e => { e.preventDefault(); e.stopPropagation(); onContextMenu?.(e, p.id, 'players') }}
         />
       ))}
+
+      {interactive && zoneDrawing?.active && (() => {
+        const { startX, startY, currentX, currentY, type } = zoneDrawing
+        if (type === 'zone-circle') {
+          const cx = (startX + currentX) / 2
+          const cy = (startY + currentY) / 2
+          const dx = currentX - startX
+          const dy = currentY - startY
+          const r = Math.sqrt(dx * dx + dy * dy) / 2
+          return (
+            <circle cx={cx} cy={cy} r={r}
+              fill="none" strokeWidth="1.5" strokeDasharray="6 4" opacity="0.6"
+              style={{ stroke: 'var(--tigers-gold)', pointerEvents: 'none' }}
+            />
+          )
+        }
+        const x = Math.min(startX, currentX)
+        const y = Math.min(startY, currentY)
+        const width = Math.abs(currentX - startX)
+        const height = Math.abs(currentY - startY)
+        return (
+          <rect x={x} y={y} width={width} height={height}
+            fill="none" strokeWidth="1.5" strokeDasharray="6 4" opacity="0.6"
+            style={{ stroke: 'var(--tigers-gold)', pointerEvents: 'none' }}
+          />
+        )
+      })()}
 
       {interactive && previewLine && (
         <line

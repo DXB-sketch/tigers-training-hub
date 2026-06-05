@@ -28,7 +28,7 @@ function BulletList({ items }) {
   )
 }
 
-export default function DrillSheet({ drill, plan, team, coach, current, total, onPrev, onNext }) {
+export default function DrillSheet({ drill, plan, team, coach, current, total, onPrev, onNext, showNav = true }) {
   if (!drill) return null
 
   const metaFields = [
@@ -111,7 +111,7 @@ export default function DrillSheet({ drill, plan, team, coach, current, total, o
         </div>
       </div>
 
-      <DrillNav current={current} total={total} onPrev={onPrev} onNext={onNext} />
+      {showNav && <DrillNav current={current} total={total} onPrev={onPrev} onNext={onNext} />}
 
       <div className="page-footer">
         <div className="footer-txt">Bribie Island Tigers FC &middot; 2026</div>

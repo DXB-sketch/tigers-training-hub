@@ -1,0 +1,117 @@
+.tpv-empty {
+  padding: 40px;
+  font-size: 13px;
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+.tpv-plan-list {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.tpv-plan-row {
+  border-bottom: 1px solid var(--rule);
+}
+
+.tpv-plan-row:first-child {
+  border-top: 1px solid var(--rule);
+}
+
+.tpv-plan-summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  cursor: pointer;
+}
+
+.tpv-plan-summary:hover .tpv-plan-title {
+  color: var(--tigers-gold);
+}
+
+.tpv-plan-week {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tigers-gold);
+  width: 40px;
+  flex-shrink: 0;
+}
+
+.tpv-plan-body {
+  flex: 1;
+}
+
+.tpv-plan-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.tpv-plan-meta {
+  font-size: 11px;
+  color: var(--ink-faint);
+  margin-top: 2px;
+}
+
+.tpv-plan-arrow {
+  font-size: 14px;
+  color: var(--ink-faint);
+  flex-shrink: 0;
+}
+
+/* Drill list (expanded) */
+.tpv-drill-list {
+  padding: 0 0 12px 56px;
+}
+
+.tpv-drill-loading,
+.tpv-drill-empty {
+  padding: 8px 0 12px 56px;
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.tpv-drill-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-left: 2px solid var(--rule);
+  margin-bottom: 2px;
+}
+
+.tpv-drill-item:hover {
+  border-left-color: var(--tigers-gold);
+  background: var(--surface-warm);
+}
+
+.tpv-drill-num {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.tpv-drill-title {
+  font-size: 13px;
+  color: var(--ink);
+  flex: 1;
+}
+
+.tpv-drill-meta {
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.tpv-drill-arrow {
+  font-size: 12px;
+  color: var(--ink-faint);
+}

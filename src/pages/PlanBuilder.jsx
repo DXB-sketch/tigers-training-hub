@@ -78,6 +78,8 @@ export default function PlanBuilder() {
   const [arrowStart, setArrowStart]   = useState(null)
   const [previewLine, setPreviewLine] = useState(null)
   const [labelEditor, setLabelEditor] = useState(null)
+  const [zoneDrawing, setZoneDrawing] = useState(null)
+  const [activeZoneColor, setActiveZoneColor] = useState('gold')
   const draggingRef = useRef(null)       // ball only — no threshold
   const dragCandidateRef = useRef(null)  // player + cone — 6px threshold
 
@@ -306,8 +308,24 @@ export default function PlanBuilder() {
     }
   }
 
+  function handleSvgMouseDown(e) {
+    if (e.button !== 0) return
+    if (activeTool !== 'zone-circle' && activeTool !== 'zone-rect') return
+    if (!selectedDrill) return
+    if (dragCandidateRef.current || draggingRef.current) return
+    const { cx, cy } = svgCoords(e, e.currentTarget)
+    setZoneDrawing({ active: true, startX: cx, startY: cy, currentX: cx, currentY: cy, type: activeTool })
+  }
+
   function handleSvgMouseMove(e) {
     const svgEl = e.currentTarget
+
+    // Zone drawing preview
+    if (zoneDrawing?.active) {
+      const { cx, cy } = svgCoords(e, svgEl)
+      setZoneDrawing(prev => prev ? { ...prev, currentX: cx, currentY: cy } : null)
+      return
+    }
 
     // Issue 4: dragCandidateRef handles players and cones with 6px threshold
     if (dragCandidateRef.current) {
@@ -352,6 +370,40 @@ export default function PlanBuilder() {
   }
 
   function handleSvgMouseUp(e) {
+    // Zone drawing completion
+    if (zoneDrawing?.active) {
+      const { cx: endX, cy: endY } = svgCoords(e, e.currentTarget)
+      const dx = endX - zoneDrawing.startX
+      const dy = endY - zoneDrawing.startY
+      const dist = Math.sqrt(dx * dx + dy * dy)
+      if (dist >= 10 && selectedDrill) {
+        let newZone
+        if (zoneDrawing.type === 'zone-circle') {
+          newZone = {
+            id: crypto.randomUUID(), type: 'zone-circle',
+            cx: (zoneDrawing.startX + endX) / 2,
+            cy: (zoneDrawing.startY + endY) / 2,
+            r: dist / 2,
+            color: activeZoneColor,
+          }
+        } else {
+          newZone = {
+            id: crypto.randomUUID(), type: 'zone-rect',
+            x: Math.min(zoneDrawing.startX, endX),
+            y: Math.min(zoneDrawing.startY, endY),
+            width: Math.abs(dx),
+            height: Math.abs(dy),
+            color: activeZoneColor,
+          }
+        }
+        const updated = [...(selectedDrill.elements ?? []), newZone]
+        handleDrillFieldChange('elements', updated)
+        savePitchState(selectedDrill.players, selectedDrill.arrows, updated)
+      }
+      setZoneDrawing(null)
+      return
+    }
+
     // Issue 4: dragCandidateRef — resolve as click or drag
     if (dragCandidateRef.current) {
       const dc = dragCandidateRef.current
@@ -388,11 +440,13 @@ export default function PlanBuilder() {
 
   // Issue 4: e.preventDefault() (not stopPropagation) so SVG handleMouseDown also fires for label editor close check
   function handlePlayerMouseDown(e, player) {
+    if (e.button !== 0) return
     e.preventDefault()
     dragCandidateRef.current = { id: player.id, type: 'player', startX: e.clientX, startY: e.clientY, isDragging: false }
   }
 
   function handleElementMouseDown(e, el) {
+    if (e.button !== 0) return
     e.preventDefault()
     if (el.type === 'cone') {
       // Issue 4: cone uses dragCandidateRef with threshold
@@ -461,6 +515,7 @@ export default function PlanBuilder() {
         </div>
         <div className="tb-actions">
           <button className="tb-btn" onClick={() => navigate(`/admin/plans/${id}/preview`)}>Preview</button>
+          <button className="tb-btn" onClick={() => window.open(`/admin/plans/${id}/print`, '_blank', 'noreferrer')}>Print</button>
         </div>
       </div>
 
@@ -622,7 +677,31 @@ export default function PlanBuilder() {
                       {crop.charAt(0).toUpperCase() + crop.slice(1)}
                     </button>
                   ))}
+                  <div className="pt-divider" />
+                  <span className="pt-label">Zones:</span>
+                  {[['zone-circle', 'Zone ○'], ['zone-rect', 'Zone □']].map(([tool, label]) => (
+                    <button
+                      key={tool}
+                      className={`pt-btn${activeTool === tool ? ' active' : ''}`}
+                      onClick={() => setActiveTool(prev => prev === tool ? null : tool)}
+                    >
+                      {label}
+                    </button>
+                  ))}
                 </div>
+                {(activeTool === 'zone-circle' || activeTool === 'zone-rect') && (
+                  <div className="pitch-toolbar pitch-toolbar--zone-colors">
+                    <span className="pt-label">Colour:</span>
+                    {['gold', 'red', 'blue'].map(color => (
+                      <button
+                        key={color}
+                        className={`pt-color-btn pt-color-btn--${color}${activeZoneColor === color ? ' active' : ''}`}
+                        onClick={() => setActiveZoneColor(color)}
+                        title={color.charAt(0).toUpperCase() + color.slice(1)}
+                      />
+                    ))}
+                  </div>
+                )}
                 <div className="pitch-editor-wrap" style={{ cursor: activeTool ? 'crosshair' : 'default' }}>
                   <PitchCanvas
                     interactive
@@ -635,7 +714,9 @@ export default function PlanBuilder() {
                     arrowStart={arrowStart}
                     previewLine={previewLine}
                     labelEditor={labelEditor}
+                    zoneDrawing={zoneDrawing}
                     onSvgClick={handleSvgClick}
+                    onSvgMouseDown={handleSvgMouseDown}
                     onSvgMouseMove={handleSvgMouseMove}
                     onSvgMouseUp={handleSvgMouseUp}
                     onPlayerMouseDown={handlePlayerMouseDown}

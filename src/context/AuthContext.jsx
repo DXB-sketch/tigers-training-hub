@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import supabase from '../lib/supabase'
 
@@ -9,6 +9,7 @@ export function AuthProvider({ children }) {
   const [role, setRole]         = useState(null)
   const [teamName, setTeamName] = useState(null)
   const [loading, setLoading]   = useState(true)
+  const userRef = useRef(null)
 
   async function fetchProfile(userId) {
     const { data } = await supabase
@@ -17,7 +18,9 @@ export function AuthProvider({ children }) {
       .eq('id', userId)
       .single()
     if (data) {
-      setUser({ id: data.id, email: data.email, name: data.name })
+      const profile = { id: data.id, email: data.email, name: data.name }
+      setUser(profile)
+      userRef.current = profile
       setRole(data.role)
       if (data.role === 'coach') {
         const { data: assignment } = await supabase
@@ -33,6 +36,7 @@ export function AuthProvider({ children }) {
       }
     } else {
       setUser(null)
+      userRef.current = null
       setRole(null)
       setTeamName(null)
     }
@@ -52,12 +56,13 @@ export function AuthProvider({ children }) {
       (event, session) => {
         if (event === 'SIGNED_OUT' || !session) {
           setUser(null)
+          userRef.current = null
           setRole(null)
           setTeamName(null)
           setLoading(false)
-        } else if (event === 'SIGNED_IN' && !user) {
+        } else if (event === 'SIGNED_IN' && !userRef.current) {
           fetchProfile(session.user.id)
-        } else if (event === 'TOKEN_REFRESHED' && session) {
+        } else if (event === 'TOKEN_REFRESHED') {
           setLoading(false)
         }
       }

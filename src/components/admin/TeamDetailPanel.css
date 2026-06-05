@@ -110,3 +110,13 @@
   border: 1.5px solid var(--ink);
   margin-top: 8px;
 }
+
+.dp-sessions-link {
+  font-size: 12px;
+  color: var(--tigers-gold);
+  text-decoration: none;
+}
+
+.dp-sessions-link:hover {
+  text-decoration: underline;
+}

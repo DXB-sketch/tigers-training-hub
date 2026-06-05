@@ -8,7 +8,7 @@ function transformTeam(t) {
   return {
     id: t.id,
     name: t.name,
-    ageGroup: t.age_group,
+    age_group_name: t.age_groups?.name ?? '',
     trainingDay: t.training_day,
     trainingTime: t.training_time,
     playerCount: t.player_count,
@@ -35,6 +35,7 @@ export function useTeams() {
         .from('teams')
         .select(`
           *,
+          age_groups(name),
           coach_assignments(coach_id, is_primary, profiles(name, email)),
           plans(id, title, status, week_number)
         `)

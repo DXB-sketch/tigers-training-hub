@@ -7,6 +7,9 @@ const LABELS = {
   'no-coach': 'No coach',
   'no-plan': 'No plan',
   live: 'Live',
+  president: 'President',
+  admin: 'Admin',
+  coach: 'Coach',
 }
 
 export default function StatusPill({ status }) {

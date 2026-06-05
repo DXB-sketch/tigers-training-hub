@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import StatusPill from '../shared/StatusPill'
 import './TeamDetailPanel.css'
 
@@ -84,7 +85,7 @@ export default function TeamDetailPanel({ team, coach, currentPlan, loading }) {
         <div className="dp-section-label">Team details</div>
         <div className="dp-field">
           <div className="dp-field-label">Age group</div>
-          <div className="dp-field-val dp-field-val--secondary">{team.ageGroup}</div>
+          <div className="dp-field-val dp-field-val--secondary">{team.age_group_name}</div>
         </div>
         <div className="dp-field">
           <div className="dp-field-label">Training day</div>
@@ -96,6 +97,12 @@ export default function TeamDetailPanel({ team, coach, currentPlan, loading }) {
           <div className="dp-field-label">Registered players</div>
           <div className="dp-field-val dp-field-val--secondary">{team.playerCount} players</div>
         </div>
+      </div>
+
+      <div className="dp-section">
+        <Link className="dp-sessions-link" to={`/admin/teams/${team.id}/plans`}>
+          View published sessions →
+        </Link>
       </div>
     </div>
   )

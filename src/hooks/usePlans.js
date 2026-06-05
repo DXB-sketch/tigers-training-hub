@@ -28,6 +28,7 @@ export function usePlans(filters = {}) {
       let query = supabase
         .from('plans')
         .select('*, teams(name), drills(count)')
+        .is('deleted_at', null)
         .order('week_number', { ascending: false })
         .order('created_at', { ascending: false })
 

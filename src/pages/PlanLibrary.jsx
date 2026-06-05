@@ -54,7 +54,7 @@ export default function PlanLibrary() {
       setCreateError('Could not create plan. Try again.')
       return
     }
-    navigate(`/admin/plans/${data.id}/edit`)
+    navigate(`/admin/plans/${data.id}`)
   }
 
   function handleCancelNew() {

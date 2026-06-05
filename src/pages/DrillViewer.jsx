@@ -71,6 +71,69 @@ function CoachDrillViewer({ drillId }) {
   )
 }
 
+function CoachPlanDrillViewer({ planId, drillId }) {
+  const navigate = useNavigate()
+  const { drills, loading: drillsLoading, error: drillsError } = useDrills(planId)
+  const { plan, team, coach, loading: planLoading, error: planError } = usePlan(planId)
+
+  const loading = drillsLoading || planLoading
+  const error   = drillsError || planError
+
+  const currentDrill = drills.find(d => d.id === drillId) ?? drills[0] ?? null
+  const total        = drills.length
+  const current      = currentDrill?.order ?? 1
+
+  function handlePrev() {
+    const prev = drills.find(d => d.order === current - 1)
+    if (prev) navigate(`/coach/plan/${planId}/drill/${prev.id}`)
+  }
+
+  function handleNext() {
+    const next = drills.find(d => d.order === current + 1)
+    if (next) navigate(`/coach/plan/${planId}/drill/${next.id}`)
+  }
+
+  if (loading) {
+    return (
+      <div style={{ background: 'var(--page-bg)', minHeight: '100vh', padding: '24px 16px', fontFamily: 'Arial' }}>
+        <TopNav />
+        <div style={{ fontSize: 12, color: 'var(--ink-faint)' }}>Loading...</div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div style={{ background: 'var(--page-bg)', minHeight: '100vh', padding: '24px 16px', fontFamily: 'Arial' }}>
+        <TopNav />
+        <div style={{ fontSize: 12, color: 'var(--ink-mid)' }}>
+          Could not load drill. Check your connection.&nbsp;
+          <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }}>Try again</a>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ background: 'var(--page-bg)', minHeight: '100vh', padding: '24px 16px', fontFamily: 'Arial' }}>
+      <TopNav />
+      <div className="drill-back-link">
+        <button onClick={() => navigate(`/coach/plan/${planId}`)}>&#8592; Back to session</button>
+      </div>
+      <DrillSheet
+        drill={currentDrill}
+        plan={plan}
+        team={team}
+        coach={coach}
+        current={current}
+        total={total}
+        onPrev={handlePrev}
+        onNext={handleNext}
+      />
+    </div>
+  )
+}
+
 function AdminDrillViewer({ planId }) {
   const { drills, loading: drillsLoading, error: drillsError } = useDrills(planId)
   const { plan, team, coach, loading: planLoading, error: planError } = usePlan(planId)
@@ -136,12 +199,15 @@ function AdminDrillViewer({ planId }) {
 }
 
 export default function DrillViewer() {
-  const { id } = useParams()
+  const { id, planId, drillId } = useParams()
   const location = useLocation()
   const isAdminPreview = location.pathname.includes('/preview')
 
   if (isAdminPreview) {
     return <AdminDrillViewer planId={id} />
+  }
+  if (planId && drillId) {
+    return <CoachPlanDrillViewer planId={planId} drillId={drillId} />
   }
   return <CoachDrillViewer drillId={id} />
 }

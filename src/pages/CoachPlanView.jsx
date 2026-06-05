@@ -68,7 +68,7 @@ export default function CoachPlanView() {
                 <td>
                   <span
                     className="drill-link"
-                    onClick={() => navigate(`/coach/drill/${drill.id}`)}
+                    onClick={() => navigate(`/coach/plan/${planId}/drill/${drill.id}`)}
                   >
                     {drill.title}
                   </span>
@@ -87,7 +87,7 @@ export default function CoachPlanView() {
           <div
             key={drill.id}
             className="drill-card"
-            onClick={() => navigate(`/coach/drill/${drill.id}`)}
+            onClick={() => navigate(`/coach/plan/${planId}/drill/${drill.id}`)}
           >
             <div className="dc-num">{drill.order}</div>
             <div className="dc-body">

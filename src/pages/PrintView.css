@@ -1,0 +1,54 @@
+.print-actions {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.print-btn {
+  padding: 8px 18px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  cursor: pointer;
+}
+
+.print-btn:hover {
+  opacity: 0.7;
+}
+
+.print-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.print-btn--primary {
+  background: var(--tigers-gold);
+  color: var(--nav-bg);
+  border-color: var(--tigers-gold);
+}
+
+.print-btn--primary:hover {
+  opacity: 0.85;
+}
+
+.print-error {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--status-err-text);
+}
+
+@media print {
+  .print-actions {
+    display: none !important;
+  }
+}

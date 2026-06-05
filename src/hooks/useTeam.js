@@ -17,6 +17,7 @@ export function useTeam(teamId) {
         .from('teams')
         .select(`
           *,
+          age_groups(name),
           coach_assignments(coach_id, is_primary, profiles(id, name, email)),
           plans(id, title, status, week_number, duration_minutes)
         `)
@@ -35,7 +36,7 @@ export function useTeam(teamId) {
       setTeam({
         id: data.id,
         name: data.name,
-        ageGroup: data.age_group,
+        age_group_name: data.age_groups?.name ?? '',
         trainingDay: data.training_day,
         trainingTime: data.training_time,
         playerCount: data.player_count,

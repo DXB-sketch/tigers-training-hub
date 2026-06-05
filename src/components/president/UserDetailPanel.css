@@ -1,0 +1,146 @@
+.udp {
+  background: var(--surface);
+  border-left: 1px solid var(--rule);
+}
+
+.udp--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.udp-empty-msg {
+  font-size: 12px;
+  color: var(--ink-faint);
+  text-align: center;
+  padding: 32px 20px;
+}
+
+.udp-header {
+  padding: 20px 20px 16px;
+  border-bottom: 2px solid var(--ink);
+}
+
+.udp-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.udp-section {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.udp-section-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 10px;
+}
+
+.udp-field {
+  margin-bottom: 12px;
+}
+
+.udp-field:last-child {
+  margin-bottom: 0;
+}
+
+.udp-field-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 4px;
+}
+
+.udp-input {
+  width: 100%;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 7px 10px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.udp-input:focus {
+  outline: none;
+  border-color: var(--ink-muted);
+}
+
+.udp-field-msg {
+  display: block;
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+.udp-field-msg--ok {
+  color: var(--status-ok-text);
+}
+
+.udp-field-msg--err {
+  color: var(--status-err-text);
+}
+
+.udp-pw-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.udp-input--pw {
+  flex: 1;
+  width: auto;
+}
+
+.udp-pw-err {
+  font-size: 12px;
+  color: var(--status-err-text);
+  margin-top: 6px;
+}
+
+.udp-pw-ok {
+  font-size: 12px;
+  color: var(--status-ok-text);
+  margin-top: 6px;
+}
+
+.udp-deactivate-btn {
+  color: var(--status-err-text);
+  border-color: var(--status-err-text);
+}
+
+.udp-confirm {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 8px;
+}
+
+.udp-confirm-btn {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.udp-confirm-btn--cancel {
+  color: var(--ink-muted);
+}
+
+.udp-status-err {
+  font-size: 12px;
+  color: var(--status-err-text);
+  margin-top: 8px;
+}

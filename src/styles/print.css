@@ -1,36 +1,62 @@
 @media print {
+  /* Hide everything that is not drill content */
+  .top-nav,
+  .plan-meta-header,
+  .builder-top-bar,
+  .plan-sidebar,
+  .pitch-toolbar,
+  .print-actions,
+  .print-btn,
+  .drill-nav,
+  .pitch-legend {
+    display: none !important;
+  }
+
+  /* Page setup */
   @page {
-    margin: 12mm;
     size: A4 portrait;
+    margin: 12mm 14mm;
   }
 
   body {
-    background: #fff;
-    padding: 0;
+    background: white;
+    color: #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10pt;
   }
 
-  .top-nav,
-  .drill-nav,
-  .pitch-toolbar,
-  .plan-sidebar,
-  .filter-bar {
-    display: none;
+  /* Each drill starts on a new page */
+  .drill-page {
+    page-break-after: always;
+    break-after: page;
   }
 
+  /* Last drill does not force a blank trailing page */
+  .drill-page:last-child {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Prevent content breaking mid-section */
+  .col-section,
+  .meta-row,
+  .drill-title-block {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Pitch SVG — fixed height so it does not overflow */
   .pitch-svg-wrap {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    max-height: 220px;
+    overflow: hidden;
   }
 
-  .content-cols,
-  .drill-fields {
-    grid-template-columns: 1fr 1fr;
+  /* Ensure gold section headings print visibly */
+  .sh {
+    border-bottom: 1pt solid #c88000;
+    color: #000;
   }
 
-  .page-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
+  /* Links print as plain text */
+  a { text-decoration: none; color: #000; }
 }
