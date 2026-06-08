@@ -7,9 +7,10 @@ export function useTeam(teamId) {
   const [currentPlan, setCurrentPlan] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError]     = useState(null)
+  const [tick, setTick]       = useState(0)
 
   useEffect(() => {
-    if (!teamId) { setLoading(false); return }
+    if (!teamId) { setTeam(null); setCoach(null); setCurrentPlan(null); setLoading(false); return }
     let cancelled = false
     async function load() {
       setLoading(true)
@@ -36,6 +37,7 @@ export function useTeam(teamId) {
       setTeam({
         id: data.id,
         name: data.name,
+        age_group_id: data.age_group_id,
         age_group_name: data.age_groups?.name ?? '',
         trainingDay: data.training_day,
         trainingTime: data.training_time,
@@ -57,7 +59,7 @@ export function useTeam(teamId) {
     }
     load()
     return () => { cancelled = true }
-  }, [teamId])
+  }, [teamId, tick])
 
-  return { team, coach, currentPlan, loading, error }
+  return { team, coach, currentPlan, loading, error, refetch: () => setTick(t => t + 1) }
 }

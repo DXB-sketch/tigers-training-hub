@@ -83,6 +83,169 @@
   border: none;
 }
 
+/* Age group management section */
+.ag-section {
+  padding: 16px 24px 12px;
+}
+
+.ag-section-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 10px;
+}
+
+.ag-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+}
+
+.ag-row--dragging {
+  opacity: 0.4;
+}
+
+.ag-row--drag-over {
+  background: var(--tigers-gold-pale);
+}
+
+.ag-drag-handle {
+  font-size: 14px;
+  color: var(--ink-faint);
+  cursor: grab;
+  user-select: none;
+  padding: 0 2px;
+  flex-shrink: 0;
+}
+
+.ag-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  flex: 1;
+}
+
+.ag-name:hover {
+  color: var(--tigers-gold);
+}
+
+.ag-name-input {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  border: none;
+  border-bottom: 1.5px solid var(--tigers-gold);
+  background: transparent;
+  outline: none;
+  flex: 1;
+  padding: 1px 0;
+}
+
+.ag-delete-btn {
+  font-size: 16px;
+  line-height: 1;
+  color: var(--ink-faint);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 4px;
+  opacity: 0;
+  transition: opacity 0.1s;
+  flex-shrink: 0;
+}
+
+.ag-row:hover .ag-delete-btn {
+  opacity: 1;
+}
+
+.ag-confirm {
+  font-size: 11px;
+  color: var(--ink-mid);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.ag-confirm-yes,
+.ag-confirm-no {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 2px 0;
+}
+
+.ag-confirm-yes { color: var(--status-err-text); }
+.ag-confirm-no  { color: var(--ink-muted); }
+
+.ag-add-btn {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--tigers-gold);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0 4px;
+  display: block;
+}
+
+.ag-error {
+  font-size: 11px;
+  color: var(--status-err-text);
+  background: var(--status-err-bg);
+  padding: 6px 10px;
+  margin-bottom: 8px;
+}
+
+.team-rule {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 0;
+}
+
+/* Grouped team sections */
+.team-group-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 24px;
+  background: var(--surface-meta);
+  border-bottom: 1px solid var(--rule-light);
+  cursor: pointer;
+  user-select: none;
+}
+
+.tgh-name {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  flex: 1;
+}
+
+.tgh-count {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  color: var(--ink-faint);
+}
+
+.tgh-chevron {
+  font-size: 10px;
+  color: var(--ink-faint);
+}
+
 @media (max-width: 700px) {
   .team-mgmt-layout {
     grid-template-columns: 1fr;

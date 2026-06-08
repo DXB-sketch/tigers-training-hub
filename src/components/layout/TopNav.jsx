@@ -33,6 +33,14 @@ export default function TopNav() {
         Bribie Tigers
       </NavLink>
       <div className="nav-links">
+        {role === 'president' && (
+          <NavLink
+            to="/president"
+            className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}
+          >
+            President
+          </NavLink>
+        )}
         <NavLink
           to="/admin"
           end

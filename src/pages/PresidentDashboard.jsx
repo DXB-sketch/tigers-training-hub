@@ -17,6 +17,7 @@ export default function PresidentDashboard() {
       <TopNav />
       <PageHeader title="President" subtitle="Club administration" />
 
+      <div className="pres-body">
       <div className="pres-stats">
         <div className="pres-stat-row">
           <span className="pres-stat-label">Total users</span>
@@ -31,6 +32,7 @@ export default function PresidentDashboard() {
       <div className="pres-links">
         <Link className="pres-nav-link" to="/president/users">Manage users →</Link>
         <Link className="pres-nav-link" to="/admin">Training plans &amp; teams →</Link>
+      </div>
       </div>
     </div>
   )

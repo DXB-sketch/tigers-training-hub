@@ -8,6 +8,7 @@ function transformTeam(t) {
   return {
     id: t.id,
     name: t.name,
+    age_group_id: t.age_group_id,
     age_group_name: t.age_groups?.name ?? '',
     trainingDay: t.training_day,
     trainingTime: t.training_time,
@@ -26,6 +27,7 @@ export function useTeams() {
   const [teams, setTeams]     = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError]     = useState(null)
+  const [tick, setTick]       = useState(0)
 
   useEffect(() => {
     let cancelled = false
@@ -50,7 +52,7 @@ export function useTeams() {
     }
     load()
     return () => { cancelled = true }
-  }, [])
+  }, [tick])
 
-  return { teams, loading, error }
+  return { teams, loading, error, refetch: () => setTick(t => t + 1) }
 }
