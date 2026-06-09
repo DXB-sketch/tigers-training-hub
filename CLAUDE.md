@@ -107,6 +107,3 @@ reference for every screen. Match them as closely as possible.
 ## Phase handoff files
 After each phase, a PHASE_N_COMPLETE.md file is written to the project root.
 Read the most recent one at the start of any new session.
-
-## Current phase
-Phase 1 — Foundation scaffold. No Supabase data yet, mock auth only.
