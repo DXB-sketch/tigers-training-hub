@@ -35,3 +35,9 @@
   border-top: 2px dashed #2255aa;
   display: inline-block;
 }
+
+@media (max-width: 540px) {
+  .legend-item {
+    font-size: 10px;
+  }
+}

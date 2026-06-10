@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import TopNav from '../components/layout/TopNav'
 import PageHeader from '../components/layout/PageHeader'
 import StatusPill from '../components/shared/StatusPill'
@@ -30,7 +31,13 @@ async function callManageUser(body) {
 
 export default function UserManagement() {
   const { users, loading, error, refetch } = useUsers()
+  const [searchParams] = useSearchParams()
   const [selectedId, setSelectedId] = useState(null)
+
+  useEffect(() => {
+    const userId = searchParams.get('userId')
+    if (userId) setSelectedId(userId)
+  }, [searchParams])
   const [deactivated, setDeactivated] = useState(new Set())
 
   const [showInvite, setShowInvite] = useState(false)
@@ -122,7 +129,7 @@ export default function UserManagement() {
       )}
 
       {!loading && !error && (
-        <div className="um-layout">
+        <div className={`um-layout${!!selectedId ? ' has-selection' : ''}`}>
           <div className="um-list-panel">
             {showInvite && (
               <div className="um-invite-form">
@@ -205,13 +212,23 @@ export default function UserManagement() {
             ))}
           </div>
 
-          <UserDetailPanel
-            key={selectedUser?.id ?? 'empty'}
-            user={selectedUser}
-            inactive={selectedUser ? isInactive(selectedUser) : false}
-            onDeactivate={handleDeactivate}
-            onReactivate={handleReactivate}
-          />
+          <div className="um-detail-col">
+            {!!selectedId && (
+              <button
+                className="mobile-back-btn"
+                onClick={() => setSelectedId(null)}
+              >
+                &#8592; Back
+              </button>
+            )}
+            <UserDetailPanel
+              key={selectedUser?.id ?? 'empty'}
+              user={selectedUser}
+              inactive={selectedUser ? isInactive(selectedUser) : false}
+              onDeactivate={handleDeactivate}
+              onReactivate={handleReactivate}
+            />
+          </div>
         </div>
       )}
     </div>

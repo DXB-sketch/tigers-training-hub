@@ -413,3 +413,35 @@
   padding: 8px;
   margin: -8px;
 }
+
+@media (max-width: 700px) {
+  .builder-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+
+  .plan-sidebar {
+    max-height: 200px;
+    overflow-y: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .drill-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .drill-field-col + .drill-field-col {
+    border-left: none;
+    border-top: 1px solid var(--rule);
+  }
+
+  .pt-btn {
+    min-height: 36px;
+  }
+
+  .tb-btn {
+    min-height: 36px;
+    padding: 0 10px;
+  }
+}

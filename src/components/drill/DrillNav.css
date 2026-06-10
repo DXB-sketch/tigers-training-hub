@@ -41,3 +41,11 @@
 .nav-dot.active {
   background: var(--tigers-gold);
 }
+
+@media (max-width: 540px) {
+  .nav-btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 10px 18px;
+  }
+}

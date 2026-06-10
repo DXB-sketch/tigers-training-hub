@@ -25,7 +25,7 @@ export default function PlanLibrary() {
   const [createError, setCreateError] = useState('')
 
   const { teams } = useTeams()
-  const { plans, loading, error } = usePlans({
+  const { plans, loading, error, refetch } = usePlans({
     teamId: teamFilter || undefined,
     status: statusFilter || undefined,
     weekNumber: weekFilter || undefined,
@@ -191,7 +191,7 @@ export default function PlanLibrary() {
       )}
 
       {!loading && !error && plans.length > 0 && (
-        <PlanList plans={plans} />
+        <PlanList plans={plans} onDeleted={refetch} />
       )}
     </div>
   )

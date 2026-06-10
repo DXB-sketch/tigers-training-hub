@@ -179,3 +179,39 @@
   color: var(--tigers-gold);
   flex-shrink: 0;
 }
+
+@media (max-width: 540px) {
+  .session-header {
+    padding: 16px 16px 14px;
+  }
+
+  .overview-block {
+    padding: 14px 16px;
+  }
+
+  .drills-label {
+    padding: 12px 16px 8px;
+  }
+
+  .drill-card {
+    padding: 14px 16px;
+    min-height: 44px;
+  }
+
+  .dc-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .session-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .overview-table th:nth-child(4),
+  .overview-table td:nth-child(4) {
+    display: none;
+  }
+}

@@ -1,0 +1,165 @@
+.coaches-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  min-height: calc(100vh - 120px);
+}
+
+.coaches-list-panel {
+  background: var(--surface);
+  border-right: 1px solid var(--rule);
+}
+
+.coaches-search-wrap {
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.coaches-search {
+  width: 100%;
+  font-size: 12px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 8px 12px;
+  outline: none;
+}
+
+.coaches-search:focus {
+  border-color: var(--tigers-gold);
+}
+
+.coaches-search::placeholder {
+  color: var(--ink-faint);
+}
+
+.coaches-group-head {
+  padding: 7px 24px;
+  background: var(--surface-meta);
+  border-bottom: 1px solid var(--rule-light);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.coaches-team {
+  padding-bottom: 4px;
+}
+
+.coaches-team-name {
+  padding: 8px 24px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink-mid);
+}
+
+.coaches-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 24px 9px 36px;
+  border-bottom: 1px solid var(--rule-light);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.coaches-row:hover {
+  background: #f7f5ef;
+}
+
+.coaches-row.selected {
+  background: var(--tigers-gold-pale);
+}
+
+.coaches-row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.coaches-row-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.coaches-row-email {
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.coaches-primary-pill {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--status-ok-text);
+  background: var(--status-ok-bg);
+  padding: 2px 6px;
+  flex-shrink: 0;
+}
+
+.coaches-empty {
+  padding: 24px;
+  font-size: 13px;
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+.mobile-back-btn {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .coaches-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .coaches-row {
+    position: relative;
+    padding-right: 36px;
+    min-height: 44px;
+  }
+
+  .coaches-row::after {
+    content: '›';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink-faint);
+    font-size: 16px;
+  }
+
+  .coaches-detail-col {
+    display: none;
+  }
+
+  .coaches-layout.has-selection .coaches-list-panel {
+    display: none;
+  }
+
+  .coaches-layout.has-selection .coaches-detail-col {
+    display: block;
+  }
+
+  .mobile-back-btn {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tigers-gold);
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    cursor: pointer;
+    padding: 12px 16px;
+    width: 100%;
+    text-align: left;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+}

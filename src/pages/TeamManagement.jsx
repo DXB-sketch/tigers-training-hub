@@ -199,7 +199,7 @@ export default function TeamManagement() {
       )}
 
       {!teamsError && !teamsLoading && (
-        <div className="team-mgmt-layout">
+        <div className={`team-mgmt-layout${(createMode || !!selectedId) ? ' has-selection' : ''}`}>
           <div className="team-list-panel">
 
             {/* Age Groups section */}
@@ -364,7 +364,16 @@ export default function TeamManagement() {
           </div>
 
           {/* Right panel: create form or team detail */}
-          {createMode ? (
+          <div className="tm-detail-col">
+            {(createMode || !!selectedId) && (
+              <button
+                className="mobile-back-btn"
+                onClick={() => { setCreateMode(false); setSelectedId(null) }}
+              >
+                &#8592; Back
+              </button>
+            )}
+            {createMode ? (
             <div className="detail-panel">
               <div className="dp-header">
                 <div className="dp-header-row">
@@ -414,6 +423,7 @@ export default function TeamManagement() {
               onDeleted={handleTeamDeleted}
             />
           )}
+          </div>
         </div>
       )}
     </div>

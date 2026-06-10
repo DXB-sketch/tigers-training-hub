@@ -10,10 +10,12 @@ import CoachPlanView from './pages/CoachPlanView'
 import DrillViewer from './pages/DrillViewer'
 import AdminDashboard from './pages/AdminDashboard'
 import TeamManagement from './pages/TeamManagement'
+import CoachesPage from './pages/CoachesPage'
 import PlanLibrary from './pages/PlanLibrary'
 import PlanBuilder from './pages/PlanBuilder'
 import PrintView from './pages/PrintView'
 import TeamPlanView from './pages/TeamPlanView'
+import AccountSettings from './pages/AccountSettings'
 
 export default function App() {
   return (
@@ -92,6 +94,14 @@ export default function App() {
             }
           />
           <Route
+            path="/admin/coaches"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'president']}>
+                <CoachesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/admin/teams/:teamId/plans"
             element={
               <ProtectedRoute allowedRoles={['admin', 'president']}>
@@ -128,6 +138,16 @@ export default function App() {
             element={
               <ProtectedRoute allowedRoles={['admin', 'president']}>
                 <PrintView />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Account settings — all roles */}
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute allowedRoles={['coach', 'admin', 'president']}>
+                <AccountSettings />
               </ProtectedRoute>
             }
           />

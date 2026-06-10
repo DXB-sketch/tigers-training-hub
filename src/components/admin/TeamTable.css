@@ -67,4 +67,9 @@
   .teams-table .hide-mobile {
     display: none;
   }
+
+  .teams-table th,
+  .teams-table td {
+    padding: 9px 12px;
+  }
 }
