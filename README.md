@@ -1,25 +1,29 @@
 # Bribie Island Tigers FC — Training Hub
 
-Training plan management app for Bribie Island Tigers FC.
+A training session management web app built for Bribie Island Tigers 
+Football Club, Queensland. Admins create and publish structured training 
+sessions; coaches access their drill sheets on mobile at the training ground.
 
-A custom full-stack application for Bribie Tigers to improve the efficiency of coaches training plans.
-Allows full customisation of training plans from an Admin login panel, giving coaches
-access to pre-madde training plans.
+## Features
+- Role-based access (President, Admin, Coach)
+- Training plan builder with interactive pitch diagram editor
+- Drill sheet viewer optimised for mobile on-pitch use
+- PDF export for printing
+- Coach and team management
+- User account management
 
-Coaches only have access to their teams assigned training plans, the coaches team
-is verified through their login. 
+## Tech Stack
+- React 18 + Vite
+- React Router v6
+- Supabase (PostgreSQL + Auth + Edge Functions + Storage)
+- Plain CSS with custom properties — no component libraries
+- Deployed on Vercel
 
-4/06/2026 - 11:49PM
-The current stage of development has the application primarily as frontend
-and is a web-based app. Hosted only through npm dev servers locally.
-Admin and Coach login is working, training plan creation, along with the
-drills in each training plan, has most required functionality, more debugging required.
-Coaches are able to view their assigned plans, most UI/UX exists as desired. 
-Before more development, the current functionality of certain features requires debugging.
+## Screenshots
+[add screenshots here]
 
-# Next Steps
-Once current functionality is tested and debugged, the remaining features will be made functional.
-The current goal is to have a working mock-up of the functionality within the features, true login auth
-and separated personal logins will be created once the functionality of the features is working.
-
-Happy with the current state of the app.
+## Running locally
+1. Clone the repo
+2. Copy .env.example to .env and add your Supabase credentials
+3. npm install
+4. npm run dev
