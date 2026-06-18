@@ -55,7 +55,15 @@ const DB_FIELD_MAP = {
   goalSize: 'goal_size',
 }
 
-const VIEW_DIMS = { full: { w: 720, h: 480 }, half: { w: 720, h: 280 }, third: { w: 720, h: 185 }, custom: { w: 720, h: 280 } }
+const VIEW_DIMS = { full: { w: 720, h: 480 }, half: { w: 720, h: 280 }, third: { w: 720, h: 185 }, custom: { w: 720, h: 480 } }
+
+function parseCropType(crop) {
+  try {
+    const obj = JSON.parse(crop)
+    if (obj && obj.type === 'custom') return 'custom'
+  } catch {}
+  return crop
+}
 
 export default function PlanBuilder() {
   const { id } = useParams()
@@ -80,8 +88,14 @@ export default function PlanBuilder() {
   const [labelEditor, setLabelEditor] = useState(null)
   const [zoneDrawing, setZoneDrawing] = useState(null)
   const [activeZoneColor, setActiveZoneColor] = useState('gold')
+  const [isMobile, setIsMobile]       = useState(() => window.innerWidth <= 700)
+  const [fabOpen, setFabOpen]         = useState(false)
+  const [selectedElement, setSelectedElement] = useState(null)
+  const [cropEditingActive, setCropEditingActive] = useState(false)
   const draggingRef = useRef(null)       // ball only — no threshold
   const dragCandidateRef = useRef(null)  // player + cone — 6px threshold
+  const mobileSvgElRef = useRef(null)
+  const mobileDragRef = useRef(null)
 
   useEffect(() => {
     if (initialPlan && !plan) {
@@ -99,6 +113,12 @@ export default function PlanBuilder() {
       setActiveGoalSize(first.goalSize ?? 'medium')
     }
   }, [initialDrills])
+
+  useEffect(() => {
+    function onResize() { setIsMobile(window.innerWidth <= 700) }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
 
   function showSave(result) {
     setSaveStatus(result)
@@ -255,7 +275,8 @@ export default function PlanBuilder() {
 
   function svgCoords(e, svgEl) {
     const rect = svgEl.getBoundingClientRect()
-    const dims = VIEW_DIMS[activeCrop] ?? VIEW_DIMS.third
+    const cropKey = parseCropType(activeCrop)
+    const dims = VIEW_DIMS[cropKey] ?? VIEW_DIMS.third
     return {
       cx: (e.clientX - rect.left) * (dims.w / rect.width),
       cy: (e.clientY - rect.top) * (dims.h / rect.height),
@@ -468,6 +489,135 @@ export default function PlanBuilder() {
     savePitchState(pl, ar, el)
   }
 
+  function svgCoordsFromTouch(touch) {
+    if (!mobileSvgElRef.current) return { cx: 0, cy: 0 }
+    const rect = mobileSvgElRef.current.getBoundingClientRect()
+    const cropKey = parseCropType(activeCrop)
+    const dims = VIEW_DIMS[cropKey] ?? VIEW_DIMS.third
+    return {
+      cx: (touch.clientX - rect.left) * (dims.w / rect.width),
+      cy: (touch.clientY - rect.top) * (dims.h / rect.height),
+    }
+  }
+
+  function handleMobileElementTap(id, arrayField, elementType) {
+    if (selectedElement?.id === id) {
+      setSelectedElement(null)
+    } else {
+      setSelectedElement({ id, arrayField, elementType })
+    }
+  }
+
+  function handleMobileSvgTap() {
+    setSelectedElement(null)
+  }
+
+  function handleMobileDelete() {
+    if (!selectedElement || !selectedDrill) return
+    const { id, arrayField } = selectedElement
+    const updated = (selectedDrill[arrayField] ?? []).filter(item => item.id !== id)
+    handleDrillFieldChange(arrayField, updated)
+    const pl = arrayField === 'players' ? updated : selectedDrill.players
+    const ar = arrayField === 'arrows' ? updated : selectedDrill.arrows
+    const el = arrayField === 'elements' ? updated : selectedDrill.elements
+    savePitchState(pl, ar, el)
+    setSelectedElement(null)
+  }
+
+  function handleMobileEditLabel() {
+    if (!selectedElement || !selectedDrill) return
+    const p = selectedDrill.players.find(pl => pl.id === selectedElement.id)
+    if (!p) return
+    setLabelEditor({ id: p.id, cx: p.cx, cy: p.cy, label: p.label, name: p.name })
+    setSelectedElement(null)
+  }
+
+  function handleMoveTouchStart(e) {
+    e.preventDefault()
+    if (!selectedElement || !selectedDrill) return
+    const touch = e.touches[0]
+    if (!touch) return
+    const { id, arrayField } = selectedElement
+    const svgStart = svgCoordsFromTouch(touch)
+    let startElementX, startElementY, startX1, startY1, startX2, startY2
+    const isArrow = arrayField === 'arrows'
+    let isRect = false
+
+    if (arrayField === 'players') {
+      const p = selectedDrill.players.find(pl => pl.id === id)
+      if (!p) return
+      startElementX = p.cx; startElementY = p.cy
+    } else if (arrayField === 'elements') {
+      const el = selectedDrill.elements.find(el => el.id === id)
+      if (!el) return
+      if (el.type === 'zone-rect') {
+        startElementX = el.x; startElementY = el.y; isRect = true
+      } else {
+        startElementX = el.cx; startElementY = el.cy
+      }
+    } else if (isArrow) {
+      const arrow = selectedDrill.arrows.find(a => a.id === id)
+      if (!arrow) return
+      const match = arrow.d.match(/M([\d.-]+)\s+([\d.-]+)\s+L([\d.-]+)\s+([\d.-]+)/)
+      if (!match) return
+      startX1 = parseFloat(match[1]); startY1 = parseFloat(match[2])
+      startX2 = parseFloat(match[3]); startY2 = parseFloat(match[4])
+    }
+
+    mobileDragRef.current = {
+      startSvgX: svgStart.cx, startSvgY: svgStart.cy,
+      startElementX, startElementY,
+      startX1, startY1, startX2, startY2,
+      isArrow, isRect,
+    }
+  }
+
+  function handleMoveTouchMove(e) {
+    e.preventDefault()
+    const md = mobileDragRef.current
+    if (!md || !selectedElement || !selectedDrill) return
+    const touch = e.touches[0]
+    if (!touch) return
+    const { cx: currentX, cy: currentY } = svgCoordsFromTouch(touch)
+    const dx = currentX - md.startSvgX
+    const dy = currentY - md.startSvgY
+    const { id, arrayField } = selectedElement
+
+    if (arrayField === 'players') {
+      const newX = md.startElementX + dx, newY = md.startElementY + dy
+      setSelectedDrill(prev => ({ ...prev, players: prev.players.map(p => p.id === id ? { ...p, cx: newX, cy: newY } : p) }))
+      setDrills(prev => prev.map(d => d.id === selectedDrill.id
+        ? { ...d, players: d.players.map(p => p.id === id ? { ...p, cx: newX, cy: newY } : p) }
+        : d))
+    } else if (arrayField === 'elements') {
+      if (md.isRect) {
+        const newX = md.startElementX + dx, newY = md.startElementY + dy
+        setSelectedDrill(prev => ({ ...prev, elements: prev.elements.map(el => el.id === id ? { ...el, x: newX, y: newY } : el) }))
+        setDrills(prev => prev.map(d => d.id === selectedDrill.id
+          ? { ...d, elements: d.elements.map(el => el.id === id ? { ...el, x: newX, y: newY } : el) }
+          : d))
+      } else {
+        const newX = md.startElementX + dx, newY = md.startElementY + dy
+        setSelectedDrill(prev => ({ ...prev, elements: prev.elements.map(el => el.id === id ? { ...el, cx: newX, cy: newY } : el) }))
+        setDrills(prev => prev.map(d => d.id === selectedDrill.id
+          ? { ...d, elements: d.elements.map(el => el.id === id ? { ...el, cx: newX, cy: newY } : el) }
+          : d))
+      }
+    } else if (arrayField === 'arrows') {
+      const newD = `M${md.startX1 + dx} ${md.startY1 + dy} L${md.startX2 + dx} ${md.startY2 + dy}`
+      setSelectedDrill(prev => ({ ...prev, arrows: prev.arrows.map(a => a.id === id ? { ...a, d: newD } : a) }))
+      setDrills(prev => prev.map(d => d.id === selectedDrill.id
+        ? { ...d, arrows: d.arrows.map(a => a.id === id ? { ...a, d: newD } : a) }
+        : d))
+    }
+  }
+
+  function handleMoveTouchEnd() {
+    if (!mobileDragRef.current || !selectedDrill) return
+    mobileDragRef.current = null
+    savePitchState(selectedDrill.players, selectedDrill.arrows, selectedDrill.elements)
+  }
+
   function saveLabelEdit() {
     if (!labelEditor || !selectedDrill) return
     const updated = selectedDrill.players.map(p =>
@@ -479,9 +629,29 @@ export default function PlanBuilder() {
   }
 
   function handleCropChange(crop) {
-    setActiveCrop(crop)
-    handleDrillFieldChange('pitchCrop', crop)
-    saveDrillField(selectedDrill.id, 'pitch_crop', crop)
+    if (crop === 'custom') {
+      const jsonStr = JSON.stringify({ type: 'custom', top: 0, left: 0, right: VIEW_DIMS.full.w, bottom: VIEW_DIMS.full.h })
+      setActiveCrop(jsonStr)
+      handleDrillFieldChange('pitchCrop', jsonStr)
+      saveDrillField(selectedDrill.id, 'pitch_crop', jsonStr)
+      setCropEditingActive(true)
+    } else {
+      setActiveCrop(crop)
+      handleDrillFieldChange('pitchCrop', crop)
+      saveDrillField(selectedDrill.id, 'pitch_crop', crop)
+      setCropEditingActive(false)
+    }
+  }
+
+  function handleCustomCropSave(jsonStr) {
+    setActiveCrop(jsonStr)
+    setSelectedDrill(prev => ({ ...prev, pitchCrop: jsonStr }))
+    setDrills(prev => prev.map(d => d.id === selectedDrill?.id ? { ...d, pitchCrop: jsonStr } : d))
+    setCropEditingActive(false)
+    showSave('saving')
+    supabase.from('drills').update({ pitch_crop: jsonStr }).eq('id', selectedDrill.id).then(({ error }) => {
+      error ? showSave('Save failed') : showSave('saved')
+    })
   }
 
   function handleGoalSizeChange(size) {
@@ -628,104 +798,253 @@ export default function PlanBuilder() {
               </div>
 
               <div className="pitch-area">
-                <div className="pitch-toolbar">
-                  <span className="pt-label">Players:</span>
-                  {['red-player', 'blue-player'].map(tool => (
-                    <button
-                      key={tool}
-                      className={`pt-btn${activeTool === tool ? ' active' : ''}`}
-                      onClick={() => setActiveTool(prev => prev === tool ? null : tool)}
-                    >
-                      {tool === 'red-player' ? '● Red' : '● Blue'}
-                    </button>
-                  ))}
-                  <div className="pt-divider" />
-                  <span className="pt-label">Elements:</span>
-                  {[
-                    ['ball', 'Ball'],
-                    ['cone', 'Cone'],
-                    ['move-arrow', 'Run →'],
-                    ['pass-arrow', 'Pass …'],
-                  ].map(([tool, label]) => (
-                    <button
-                      key={tool}
-                      className={`pt-btn${activeTool === tool ? ' active' : ''}`}
-                      onClick={() => setActiveTool(prev => prev === tool ? null : tool)}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                  <div className="pt-divider" />
-                  <span className="pt-label">Goal:</span>
-                  {['mini', 'small', 'medium', 'full'].map(size => (
-                    <button
-                      key={size}
-                      className={`pt-btn${activeGoalSize === size ? ' active' : ''}`}
-                      onClick={() => handleGoalSizeChange(size)}
-                    >
-                      {size.charAt(0).toUpperCase() + size.slice(1)}
-                    </button>
-                  ))}
-                  <div className="pt-divider" />
-                  <span className="pt-label">Pitch crop:</span>
-                  {['third', 'half', 'full'].map(crop => (
-                    <button
-                      key={crop}
-                      className={`pt-btn${activeCrop === crop ? ' active' : ''}`}
-                      onClick={() => handleCropChange(crop)}
-                    >
-                      {crop.charAt(0).toUpperCase() + crop.slice(1)}
-                    </button>
-                  ))}
-                  <div className="pt-divider" />
-                  <span className="pt-label">Zones:</span>
-                  {[['zone-circle', 'Zone ○'], ['zone-rect', 'Zone □']].map(([tool, label]) => (
-                    <button
-                      key={tool}
-                      className={`pt-btn${activeTool === tool ? ' active' : ''}`}
-                      onClick={() => setActiveTool(prev => prev === tool ? null : tool)}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-                {(activeTool === 'zone-circle' || activeTool === 'zone-rect') && (
-                  <div className="pitch-toolbar pitch-toolbar--zone-colors">
-                    <span className="pt-label">Colour:</span>
-                    {['gold', 'red', 'blue'].map(color => (
-                      <button
-                        key={color}
-                        className={`pt-color-btn pt-color-btn--${color}${activeZoneColor === color ? ' active' : ''}`}
-                        onClick={() => setActiveZoneColor(color)}
-                        title={color.charAt(0).toUpperCase() + color.slice(1)}
-                      />
-                    ))}
-                  </div>
+                {!isMobile && (
+                  <>
+                    <div className="pitch-toolbar">
+                      <span className="pt-label">Players:</span>
+                      {['red-player', 'blue-player'].map(tool => (
+                        <button
+                          key={tool}
+                          className={`pt-btn${activeTool === tool ? ' active' : ''}`}
+                          onClick={() => setActiveTool(prev => prev === tool ? null : tool)}
+                        >
+                          {tool === 'red-player' ? '● Red' : '● Blue'}
+                        </button>
+                      ))}
+                      <div className="pt-divider" />
+                      <span className="pt-label">Elements:</span>
+                      {[
+                        ['ball', 'Ball'],
+                        ['cone', 'Cone'],
+                        ['move-arrow', 'Run →'],
+                        ['pass-arrow', 'Pass …'],
+                      ].map(([tool, label]) => (
+                        <button
+                          key={tool}
+                          className={`pt-btn${activeTool === tool ? ' active' : ''}`}
+                          onClick={() => setActiveTool(prev => prev === tool ? null : tool)}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                      <div className="pt-divider" />
+                      <span className="pt-label">Goal:</span>
+                      {['mini', 'small', 'medium', 'full'].map(size => (
+                        <button
+                          key={size}
+                          className={`pt-btn${activeGoalSize === size ? ' active' : ''}`}
+                          onClick={() => handleGoalSizeChange(size)}
+                        >
+                          {size.charAt(0).toUpperCase() + size.slice(1)}
+                        </button>
+                      ))}
+                      <div className="pt-divider" />
+                      <span className="pt-label">Pitch crop:</span>
+                      {['third', 'half', 'full', 'custom'].map(crop => (
+                        <button
+                          key={crop}
+                          className={`pt-btn${parseCropType(activeCrop) === crop ? ' active' : ''}`}
+                          onClick={() => handleCropChange(crop)}
+                        >
+                          {crop.charAt(0).toUpperCase() + crop.slice(1)}
+                        </button>
+                      ))}
+                      {parseCropType(activeCrop) === 'custom' && (
+                        <button
+                          className="pt-btn pt-btn--edit-crop"
+                          onClick={() => setCropEditingActive(true)}
+                        >
+                          Edit crop
+                        </button>
+                      )}
+                      <div className="pt-divider" />
+                      <span className="pt-label">Zones:</span>
+                      {[['zone-circle', 'Zone ○'], ['zone-rect', 'Zone □']].map(([tool, label]) => (
+                        <button
+                          key={tool}
+                          className={`pt-btn${activeTool === tool ? ' active' : ''}`}
+                          onClick={() => setActiveTool(prev => prev === tool ? null : tool)}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                    {(activeTool === 'zone-circle' || activeTool === 'zone-rect') && (
+                      <div className="pitch-toolbar pitch-toolbar--zone-colors">
+                        <span className="pt-label">Colour:</span>
+                        {['gold', 'red', 'blue'].map(color => (
+                          <button
+                            key={color}
+                            className={`pt-color-btn pt-color-btn--${color}${activeZoneColor === color ? ' active' : ''}`}
+                            onClick={() => setActiveZoneColor(color)}
+                            title={color.charAt(0).toUpperCase() + color.slice(1)}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </>
                 )}
-                <div className="pitch-editor-wrap" style={{ cursor: activeTool ? 'crosshair' : 'default' }}>
-                  <PitchCanvas
-                    interactive
-                    crop={activeCrop}
-                    players={selectedDrill.players ?? []}
-                    arrows={selectedDrill.arrows ?? []}
-                    elements={selectedDrill.elements ?? []}
-                    goalSize={activeGoalSize}
-                    activeTool={activeTool}
-                    arrowStart={arrowStart}
-                    previewLine={previewLine}
-                    labelEditor={labelEditor}
-                    zoneDrawing={zoneDrawing}
-                    onSvgClick={handleSvgClick}
-                    onSvgMouseDown={handleSvgMouseDown}
-                    onSvgMouseMove={handleSvgMouseMove}
-                    onSvgMouseUp={handleSvgMouseUp}
-                    onPlayerMouseDown={handlePlayerMouseDown}
-                    onElementMouseDown={handleElementMouseDown}
-                    onContextMenu={handleContextMenu}
-                    onLabelChange={setLabelEditor}
-                    onLabelSave={saveLabelEdit}
-                    onLabelClose={() => setLabelEditor(null)}
-                  />
+                <div className="pitch-canvas-wrap">
+                  <div className="pitch-editor-wrap" style={{ cursor: activeTool ? 'crosshair' : 'default' }}>
+                    <PitchCanvas
+                      interactive
+                      isMobile={isMobile}
+                      crop={activeCrop}
+                      cropEditingActive={cropEditingActive}
+                      players={selectedDrill.players ?? []}
+                      arrows={selectedDrill.arrows ?? []}
+                      elements={selectedDrill.elements ?? []}
+                      goalSize={activeGoalSize}
+                      activeTool={activeTool}
+                      arrowStart={arrowStart}
+                      previewLine={previewLine}
+                      labelEditor={labelEditor}
+                      zoneDrawing={zoneDrawing}
+                      onSvgClick={handleSvgClick}
+                      onSvgMouseDown={handleSvgMouseDown}
+                      onSvgMouseMove={handleSvgMouseMove}
+                      onSvgMouseUp={handleSvgMouseUp}
+                      onPlayerMouseDown={handlePlayerMouseDown}
+                      onElementMouseDown={handleElementMouseDown}
+                      onContextMenu={handleContextMenu}
+                      onLabelChange={setLabelEditor}
+                      onLabelSave={saveLabelEdit}
+                      onLabelClose={() => setLabelEditor(null)}
+                      selectedElement={selectedElement}
+                      onMobileElementTap={handleMobileElementTap}
+                      onMobileSvgTap={handleMobileSvgTap}
+                      onSvgRef={el => { mobileSvgElRef.current = el }}
+                      onCustomCropSave={handleCustomCropSave}
+                      onCropEditingCancel={() => setCropEditingActive(false)}
+                    />
+                  </div>
+                  {isMobile && (
+                    <>
+                      {selectedElement ? (
+                        <div className="pitch-selection-toolbar">
+                          <button
+                            className="pst-btn pst-btn--move"
+                            onTouchStart={handleMoveTouchStart}
+                            onTouchMove={handleMoveTouchMove}
+                            onTouchEnd={handleMoveTouchEnd}
+                          >
+                            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                              <defs />
+                              <line x1="8" y1="5" x2="8" y2="11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                              <line x1="5" y1="8" x2="11" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                              <polygon points="8,1 5.5,5 10.5,5" fill="currentColor"/>
+                              <polygon points="8,15 5.5,11 10.5,11" fill="currentColor"/>
+                              <polygon points="1,8 5,5.5 5,10.5" fill="currentColor"/>
+                              <polygon points="15,8 11,5.5 11,10.5" fill="currentColor"/>
+                            </svg>
+                            Move
+                          </button>
+                          {selectedElement.arrayField === 'players' && (
+                            <button className="pst-btn" onClick={handleMobileEditLabel}>
+                              Edit Label
+                            </button>
+                          )}
+                          <button className="pst-btn pst-btn--delete" onClick={handleMobileDelete}>
+                            Delete
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <button
+                            className="pitch-fab"
+                            onClick={() => setFabOpen(o => !o)}
+                          >
+                            {fabOpen ? '×' : '+'}
+                          </button>
+                          {fabOpen && (
+                            <div className="pitch-fab-panel">
+                              <div className="fab-section">
+                                <span className="fab-section-label">Players</span>
+                                {['red-player', 'blue-player'].map(tool => (
+                                  <button
+                                    key={tool}
+                                    className={`pt-btn${activeTool === tool ? ' active' : ''}`}
+                                    onClick={() => { setActiveTool(prev => prev === tool ? null : tool); setFabOpen(false) }}
+                                  >
+                                    {tool === 'red-player' ? '● Red' : '● Blue'}
+                                  </button>
+                                ))}
+                              </div>
+                              <div className="fab-section">
+                                <span className="fab-section-label">Elements</span>
+                                {[['ball', 'Ball'], ['cone', 'Cone'], ['move-arrow', 'Run →'], ['pass-arrow', 'Pass …']].map(([tool, label]) => (
+                                  <button
+                                    key={tool}
+                                    className={`pt-btn${activeTool === tool ? ' active' : ''}`}
+                                    onClick={() => { setActiveTool(prev => prev === tool ? null : tool); setFabOpen(false) }}
+                                  >
+                                    {label}
+                                  </button>
+                                ))}
+                              </div>
+                              <div className="fab-section">
+                                <span className="fab-section-label">Goal</span>
+                                {['mini', 'small', 'medium', 'full'].map(size => (
+                                  <button
+                                    key={size}
+                                    className={`pt-btn${activeGoalSize === size ? ' active' : ''}`}
+                                    onClick={() => { handleGoalSizeChange(size); setFabOpen(false) }}
+                                  >
+                                    {size.charAt(0).toUpperCase() + size.slice(1)}
+                                  </button>
+                                ))}
+                              </div>
+                              <div className="fab-section">
+                                <span className="fab-section-label">Pitch crop</span>
+                                {['third', 'half', 'full', 'custom'].map(crop => (
+                                  <button
+                                    key={crop}
+                                    className={`pt-btn${parseCropType(activeCrop) === crop ? ' active' : ''}`}
+                                    onClick={() => { handleCropChange(crop); setFabOpen(false) }}
+                                  >
+                                    {crop.charAt(0).toUpperCase() + crop.slice(1)}
+                                  </button>
+                                ))}
+                                {parseCropType(activeCrop) === 'custom' && (
+                                  <button
+                                    className="pt-btn pt-btn--edit-crop"
+                                    onClick={() => { setCropEditingActive(true); setFabOpen(false) }}
+                                  >
+                                    Edit crop
+                                  </button>
+                                )}
+                              </div>
+                              <div className="fab-section">
+                                <span className="fab-section-label">Zones</span>
+                                {[['zone-circle', 'Zone ○'], ['zone-rect', 'Zone □']].map(([tool, label]) => (
+                                  <button
+                                    key={tool}
+                                    className={`pt-btn${activeTool === tool ? ' active' : ''}`}
+                                    onClick={() => { setActiveTool(prev => prev === tool ? null : tool); setFabOpen(false) }}
+                                  >
+                                    {label}
+                                  </button>
+                                ))}
+                              </div>
+                              {(activeTool === 'zone-circle' || activeTool === 'zone-rect') && (
+                                <div className="fab-section">
+                                  <span className="fab-section-label">Colour</span>
+                                  {['gold', 'red', 'blue'].map(color => (
+                                    <button
+                                      key={color}
+                                      className={`pt-color-btn pt-color-btn--${color}${activeZoneColor === color ? ' active' : ''}`}
+                                      onClick={() => { setActiveZoneColor(color); setFabOpen(false) }}
+                                      title={color.charAt(0).toUpperCase() + color.slice(1)}
+                                    />
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
 

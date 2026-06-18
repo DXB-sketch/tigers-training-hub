@@ -57,7 +57,7 @@ export function useDrills(planId) {
         .from('drills')
         .select('*')
         .eq('plan_id', planId)
-        .order('drill_order')
+        .order('drill_order', { ascending: true })
       if (cancelled) return
       if (err) {
         setError(err.message)

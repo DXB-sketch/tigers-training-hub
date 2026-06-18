@@ -321,6 +321,18 @@
   color: var(--tigers-gold);
 }
 
+.pt-btn--edit-crop {
+  background: var(--ink);
+  color: var(--tigers-gold);
+  border-color: var(--ink);
+}
+
+.pt-btn--edit-crop:hover {
+  background: var(--ink);
+  color: var(--tigers-gold);
+  border-color: var(--ink);
+}
+
 .pt-divider {
   width: 1px;
   height: 20px;
@@ -444,4 +456,128 @@
     min-height: 36px;
     padding: 0 10px;
   }
+}
+
+/* FAB — mobile pitch tool picker */
+.pitch-canvas-wrap {
+  position: relative;
+}
+
+.pitch-fab {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--tigers-gold);
+  font-size: 22px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  line-height: 1;
+}
+
+.pitch-fab-panel {
+  position: absolute;
+  bottom: 68px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  z-index: 10;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 55vh;
+  overflow-y: auto;
+  min-width: 220px;
+}
+
+.fab-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.fab-section-label {
+  width: 100%;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tigers-gold);
+  opacity: 0.55;
+  margin-bottom: 2px;
+}
+
+.pitch-fab-panel .pt-btn {
+  color: var(--tigers-gold);
+  background: transparent;
+  border-color: var(--tigers-gold);
+  opacity: 0.8;
+}
+
+.pitch-fab-panel .pt-btn:hover {
+  opacity: 1;
+  background: transparent;
+  border-color: var(--tigers-gold);
+  color: var(--tigers-gold);
+}
+
+.pitch-fab-panel .pt-btn.active {
+  background: var(--tigers-gold);
+  color: var(--ink);
+  border-color: var(--tigers-gold);
+  opacity: 1;
+}
+
+/* Mobile element selection toolbar */
+.pitch-selection-toolbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--ink);
+  z-index: 10;
+}
+
+.pst-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tigers-gold);
+  background: transparent;
+  border: 1.5px solid var(--tigers-gold);
+  cursor: pointer;
+  min-height: 44px;
+  touch-action: manipulation;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.pst-btn--move {
+  touch-action: none;
+}
+
+.pst-btn--delete {
+  color: var(--status-err-text);
+  border-color: var(--status-err-text);
 }
