@@ -55,7 +55,7 @@ const DB_FIELD_MAP = {
   goalSize: 'goal_size',
 }
 
-const VIEW_DIMS = { full: { w: 720, h: 480 }, half: { w: 720, h: 280 }, third: { w: 720, h: 185 }, custom: { w: 720, h: 480 } }
+const VIEW_DIMS = { full: { w: 720, h: 480 }, half: { w: 720, h: 280 }, third: { w: 720, h: 185 }, custom: { w: 720, h: 480 }, blank: { w: 720, h: 185 } }
 
 function parseCropType(crop) {
   try {
@@ -97,6 +97,17 @@ export default function PlanBuilder() {
   const mobileSvgElRef = useRef(null)
   const mobileDragRef = useRef(null)
 
+  // Second canvas state
+  const [activeCrop2, setActiveCrop2]         = useState('full')
+  const [arrowStart2, setArrowStart2]         = useState(null)
+  const [previewLine2, setPreviewLine2]       = useState(null)
+  const [labelEditor2, setLabelEditor2]       = useState(null)
+  const [zoneDrawing2, setZoneDrawing2]       = useState(null)
+  const [selectedElement2, setSelectedElement2] = useState(null)
+  const [cropEditingActive2, setCropEditingActive2] = useState(false)
+  const draggingRef2 = useRef(null)
+  const dragCandidateRef2 = useRef(null)
+
   useEffect(() => {
     if (initialPlan && !plan) {
       setPlan({ ...initialPlan })
@@ -111,6 +122,7 @@ export default function PlanBuilder() {
       setSelectedDrill({ ...first })
       setActiveCrop(first.pitchCrop ?? 'third')
       setActiveGoalSize(first.goalSize ?? 'medium')
+      setActiveCrop2(first.secondCanvas?.pitchCrop ?? 'full')
     }
   }, [initialDrills])
 
@@ -220,6 +232,13 @@ export default function PlanBuilder() {
     setPreviewLine(null)
     setActiveCrop(drill.pitchCrop ?? 'third')
     setActiveGoalSize(drill.goalSize ?? 'medium')
+    setActiveCrop2(drill.secondCanvas?.pitchCrop ?? 'full')
+    setArrowStart2(null)
+    setPreviewLine2(null)
+    setLabelEditor2(null)
+    setZoneDrawing2(null)
+    setSelectedElement2(null)
+    setCropEditingActive2(false)
   }
 
   async function handleDeleteDrill(drill) {
@@ -283,6 +302,16 @@ export default function PlanBuilder() {
     }
   }
 
+  function svgCoords2(e, svgEl) {
+    const rect = svgEl.getBoundingClientRect()
+    const cropKey = parseCropType(activeCrop2)
+    const dims = VIEW_DIMS[cropKey] ?? VIEW_DIMS.full
+    return {
+      cx: (e.clientX - rect.left) * (dims.w / rect.width),
+      cy: (e.clientY - rect.top) * (dims.h / rect.height),
+    }
+  }
+
   function savePitchState(players, arrows, elements) {
     if (!selectedDrill) return
     showSave('saving')
@@ -291,6 +320,20 @@ export default function PlanBuilder() {
       arrows,
       elements,
     }).eq('id', selectedDrill.id).then(({ error }) => {
+      error ? showSave('Save failed') : showSave('saved')
+    })
+  }
+
+  function savePitchState2(players, arrows, elements) {
+    if (!selectedDrill?.secondCanvas) return
+    const dbSc = {
+      players,
+      arrows,
+      elements,
+      pitch_crop: selectedDrill.secondCanvas.pitchCrop ?? 'full',
+    }
+    showSave('saving')
+    supabase.from('drills').update({ second_canvas: dbSc }).eq('id', selectedDrill.id).then(({ error }) => {
       error ? showSave('Save failed') : showSave('saved')
     })
   }
@@ -660,6 +703,264 @@ export default function PlanBuilder() {
     saveDrillField(selectedDrill.id, 'goal_size', size)
   }
 
+  // ── Second canvas handlers ──────────────────────────────────────────────
+
+  function handleSvgClick2(e) {
+    const sc = selectedDrill?.secondCanvas
+    if (!sc) return
+    const { cx, cy } = svgCoords2(e, e.currentTarget)
+
+    if (activeTool === 'red-player' || activeTool === 'blue-player') {
+      const team = activeTool === 'red-player' ? 'red' : 'blue'
+      const newPlayer = { id: crypto.randomUUID(), team, cx, cy, label: 'CM', name: '' }
+      const updatedPlayers = [...(sc.players ?? []), newPlayer]
+      handleDrillFieldChange('secondCanvas', { ...sc, players: updatedPlayers })
+      savePitchState2(updatedPlayers, sc.arrows, sc.elements)
+      return
+    }
+    if (activeTool === 'ball' || activeTool === 'cone') {
+      const newEl = { id: crypto.randomUUID(), type: activeTool, cx, cy }
+      const updatedElements = [...(sc.elements ?? []), newEl]
+      handleDrillFieldChange('secondCanvas', { ...sc, elements: updatedElements })
+      savePitchState2(sc.players, sc.arrows, updatedElements)
+      return
+    }
+    if (activeTool === 'move-arrow' || activeTool === 'pass-arrow') {
+      if (!arrowStart2) {
+        setArrowStart2({ cx, cy })
+      } else {
+        const type = activeTool === 'move-arrow' ? 'move' : 'pass'
+        const newArrow = { id: crypto.randomUUID(), type, d: `M${arrowStart2.cx} ${arrowStart2.cy} L${cx} ${cy}` }
+        const updatedArrows = [...(sc.arrows ?? []), newArrow]
+        handleDrillFieldChange('secondCanvas', { ...sc, arrows: updatedArrows })
+        savePitchState2(sc.players, updatedArrows, sc.elements)
+        setArrowStart2(null)
+        setPreviewLine2(null)
+      }
+    }
+  }
+
+  function handleSvgMouseDown2(e) {
+    if (e.button !== 0) return
+    if (activeTool !== 'zone-circle' && activeTool !== 'zone-rect') return
+    if (!selectedDrill?.secondCanvas) return
+    if (dragCandidateRef2.current || draggingRef2.current) return
+    const { cx, cy } = svgCoords2(e, e.currentTarget)
+    setZoneDrawing2({ active: true, startX: cx, startY: cy, currentX: cx, currentY: cy, type: activeTool })
+  }
+
+  function handleSvgMouseMove2(e) {
+    const svgEl = e.currentTarget
+
+    if (zoneDrawing2?.active) {
+      const { cx, cy } = svgCoords2(e, svgEl)
+      setZoneDrawing2(prev => prev ? { ...prev, currentX: cx, currentY: cy } : null)
+      return
+    }
+
+    if (dragCandidateRef2.current) {
+      const dc = dragCandidateRef2.current
+      const dx = e.clientX - dc.startX
+      const dy = e.clientY - dc.startY
+      if (!dc.isDragging && Math.sqrt(dx * dx + dy * dy) > 6) {
+        dc.isDragging = true
+      }
+      if (dc.isDragging) {
+        const { cx, cy } = svgCoords2(e, svgEl)
+        if (dc.type === 'player') {
+          setSelectedDrill(prev => ({ ...prev, secondCanvas: { ...prev.secondCanvas, players: prev.secondCanvas.players.map(p => p.id === dc.id ? { ...p, cx, cy } : p) } }))
+          setDrills(prev => prev.map(d => d.id === selectedDrill?.id
+            ? { ...d, secondCanvas: { ...d.secondCanvas, players: d.secondCanvas.players.map(p => p.id === dc.id ? { ...p, cx, cy } : p) } }
+            : d))
+        } else if (dc.type === 'cone') {
+          setSelectedDrill(prev => ({ ...prev, secondCanvas: { ...prev.secondCanvas, elements: prev.secondCanvas.elements.map(el => el.id === dc.id ? { ...el, cx, cy } : el) } }))
+          setDrills(prev => prev.map(d => d.id === selectedDrill?.id
+            ? { ...d, secondCanvas: { ...d.secondCanvas, elements: d.secondCanvas.elements.map(el => el.id === dc.id ? { ...el, cx, cy } : el) } }
+            : d))
+        }
+      }
+      return
+    }
+
+    if (draggingRef2.current) {
+      const { cx, cy } = svgCoords2(e, svgEl)
+      const { id: dragId } = draggingRef2.current
+      setSelectedDrill(prev => ({ ...prev, secondCanvas: { ...prev.secondCanvas, elements: prev.secondCanvas.elements.map(el => el.id === dragId ? { ...el, cx, cy } : el) } }))
+      setDrills(prev => prev.map(d => d.id === selectedDrill?.id
+        ? { ...d, secondCanvas: { ...d.secondCanvas, elements: d.secondCanvas.elements.map(el => el.id === dragId ? { ...el, cx, cy } : el) } }
+        : d))
+      return
+    }
+
+    if (arrowStart2 && (activeTool === 'move-arrow' || activeTool === 'pass-arrow')) {
+      const { cx, cy } = svgCoords2(e, svgEl)
+      setPreviewLine2({ x1: arrowStart2.cx, y1: arrowStart2.cy, x2: cx, y2: cy })
+    }
+  }
+
+  function handleSvgMouseUp2(e) {
+    const sc = selectedDrill?.secondCanvas
+
+    if (zoneDrawing2?.active) {
+      const { cx: endX, cy: endY } = svgCoords2(e, e.currentTarget)
+      const dx = endX - zoneDrawing2.startX
+      const dy = endY - zoneDrawing2.startY
+      const dist = Math.sqrt(dx * dx + dy * dy)
+      if (dist >= 10 && sc) {
+        let newZone
+        if (zoneDrawing2.type === 'zone-circle') {
+          newZone = {
+            id: crypto.randomUUID(), type: 'zone-circle',
+            cx: (zoneDrawing2.startX + endX) / 2,
+            cy: (zoneDrawing2.startY + endY) / 2,
+            r: dist / 2,
+            color: activeZoneColor,
+          }
+        } else {
+          newZone = {
+            id: crypto.randomUUID(), type: 'zone-rect',
+            x: Math.min(zoneDrawing2.startX, endX),
+            y: Math.min(zoneDrawing2.startY, endY),
+            width: Math.abs(dx),
+            height: Math.abs(dy),
+            color: activeZoneColor,
+          }
+        }
+        const updatedElements = [...(sc.elements ?? []), newZone]
+        handleDrillFieldChange('secondCanvas', { ...sc, elements: updatedElements })
+        savePitchState2(sc.players, sc.arrows, updatedElements)
+      }
+      setZoneDrawing2(null)
+      return
+    }
+
+    if (dragCandidateRef2.current) {
+      const dc = dragCandidateRef2.current
+      dragCandidateRef2.current = null
+      if (!sc) return
+      if (dc.isDragging) {
+        savePitchState2(sc.players, sc.arrows, sc.elements)
+      } else {
+        if (activeTool === null && dc.type === 'player') {
+          const p = sc.players.find(pl => pl.id === dc.id)
+          if (p) setLabelEditor2({ id: p.id, cx: p.cx, cy: p.cy, label: p.label, name: p.name })
+        }
+      }
+      return
+    }
+
+    if (draggingRef2.current) {
+      const { cx, cy } = svgCoords2(e, e.currentTarget)
+      const { id: dragId } = draggingRef2.current
+      draggingRef2.current = null
+      if (!sc) return
+      const updated = sc.elements.map(el => el.id === dragId ? { ...el, cx, cy } : el)
+      handleDrillFieldChange('secondCanvas', { ...sc, elements: updated })
+      savePitchState2(sc.players, sc.arrows, updated)
+    }
+  }
+
+  function handlePlayerMouseDown2(e, player) {
+    if (e.button !== 0) return
+    e.preventDefault()
+    dragCandidateRef2.current = { id: player.id, type: 'player', startX: e.clientX, startY: e.clientY, isDragging: false }
+  }
+
+  function handleElementMouseDown2(e, el) {
+    if (e.button !== 0) return
+    e.preventDefault()
+    if (el.type === 'cone') {
+      dragCandidateRef2.current = { id: el.id, type: 'cone', startX: e.clientX, startY: e.clientY, isDragging: false }
+    } else {
+      draggingRef2.current = { id: el.id, type: 'element' }
+    }
+  }
+
+  function handleContextMenu2(e, itemId, arrayField) {
+    e.preventDefault()
+    const sc = selectedDrill?.secondCanvas
+    if (!sc) return
+    const updated = (sc[arrayField] ?? []).filter(item => item.id !== itemId)
+    handleDrillFieldChange('secondCanvas', { ...sc, [arrayField]: updated })
+    savePitchState2(
+      arrayField === 'players' ? updated : sc.players,
+      arrayField === 'arrows' ? updated : sc.arrows,
+      arrayField === 'elements' ? updated : sc.elements,
+    )
+  }
+
+  function saveLabelEdit2() {
+    const sc = selectedDrill?.secondCanvas
+    if (!labelEditor2 || !sc) return
+    const updated = sc.players.map(p =>
+      p.id === labelEditor2.id ? { ...p, label: labelEditor2.label, name: labelEditor2.name } : p
+    )
+    handleDrillFieldChange('secondCanvas', { ...sc, players: updated })
+    savePitchState2(updated, sc.arrows, sc.elements)
+    setLabelEditor2(null)
+  }
+
+  function handleCropChange2(crop) {
+    const sc = selectedDrill?.secondCanvas
+    if (!sc) return
+    if (crop === 'custom') {
+      const jsonStr = JSON.stringify({ type: 'custom', top: 0, left: 0, right: VIEW_DIMS.full.w, bottom: VIEW_DIMS.full.h })
+      setActiveCrop2(jsonStr)
+      const newSc = { ...sc, pitchCrop: jsonStr }
+      handleDrillFieldChange('secondCanvas', newSc)
+      showSave('saving')
+      supabase.from('drills').update({ second_canvas: { players: newSc.players, arrows: newSc.arrows, elements: newSc.elements, pitch_crop: jsonStr } }).eq('id', selectedDrill.id).then(({ error }) => {
+        error ? showSave('Save failed') : showSave('saved')
+      })
+      setCropEditingActive2(true)
+    } else {
+      setActiveCrop2(crop)
+      const newSc = { ...sc, pitchCrop: crop }
+      handleDrillFieldChange('secondCanvas', newSc)
+      showSave('saving')
+      supabase.from('drills').update({ second_canvas: { players: newSc.players, arrows: newSc.arrows, elements: newSc.elements, pitch_crop: crop } }).eq('id', selectedDrill.id).then(({ error }) => {
+        error ? showSave('Save failed') : showSave('saved')
+      })
+      setCropEditingActive2(false)
+    }
+  }
+
+  function handleCustomCropSave2(jsonStr) {
+    const sc = selectedDrill?.secondCanvas
+    if (!sc) return
+    setActiveCrop2(jsonStr)
+    const newSc = { ...sc, pitchCrop: jsonStr }
+    handleDrillFieldChange('secondCanvas', newSc)
+    setCropEditingActive2(false)
+    showSave('saving')
+    supabase.from('drills').update({ second_canvas: { players: newSc.players, arrows: newSc.arrows, elements: newSc.elements, pitch_crop: jsonStr } }).eq('id', selectedDrill.id).then(({ error }) => {
+      error ? showSave('Save failed') : showSave('saved')
+    })
+  }
+
+  async function handleAddSecondCanvas() {
+    const empty = { players: [], arrows: [], elements: [], pitchCrop: 'full' }
+    handleDrillFieldChange('secondCanvas', empty)
+    setActiveCrop2('full')
+    showSave('saving')
+    const { error } = await supabase.from('drills').update({ second_canvas: { players: [], arrows: [], elements: [], pitch_crop: 'full' } }).eq('id', selectedDrill.id)
+    error ? showSave('Save failed') : showSave('saved')
+  }
+
+  async function handleRemoveSecondCanvas() {
+    handleDrillFieldChange('secondCanvas', null)
+    setActiveCrop2('full')
+    setArrowStart2(null)
+    setPreviewLine2(null)
+    setLabelEditor2(null)
+    setZoneDrawing2(null)
+    setSelectedElement2(null)
+    setCropEditingActive2(false)
+    showSave('saving')
+    const { error } = await supabase.from('drills').update({ second_canvas: null }).eq('id', selectedDrill.id)
+    error ? showSave('Save failed') : showSave('saved')
+  }
+
   if (planLoading) {
     return <div style={{ padding: '40px', fontFamily: 'Arial', color: 'var(--ink-faint)', fontSize: 12 }}>Loading...</div>
   }
@@ -840,13 +1141,13 @@ export default function PlanBuilder() {
                       ))}
                       <div className="pt-divider" />
                       <span className="pt-label">Pitch crop:</span>
-                      {['third', 'half', 'full', 'custom'].map(crop => (
+                      {['third', 'half', 'full', 'blank', 'custom'].map(crop => (
                         <button
                           key={crop}
                           className={`pt-btn${parseCropType(activeCrop) === crop ? ' active' : ''}`}
                           onClick={() => handleCropChange(crop)}
                         >
-                          {crop.charAt(0).toUpperCase() + crop.slice(1)}
+                          {crop === 'blank' ? 'Blank' : crop.charAt(0).toUpperCase() + crop.slice(1)}
                         </button>
                       ))}
                       {parseCropType(activeCrop) === 'custom' && (
@@ -996,13 +1297,13 @@ export default function PlanBuilder() {
                               </div>
                               <div className="fab-section">
                                 <span className="fab-section-label">Pitch crop</span>
-                                {['third', 'half', 'full', 'custom'].map(crop => (
+                                {['third', 'half', 'full', 'blank', 'custom'].map(crop => (
                                   <button
                                     key={crop}
                                     className={`pt-btn${parseCropType(activeCrop) === crop ? ' active' : ''}`}
                                     onClick={() => { handleCropChange(crop); setFabOpen(false) }}
                                   >
-                                    {crop.charAt(0).toUpperCase() + crop.slice(1)}
+                                    {crop === 'blank' ? 'Blank' : crop.charAt(0).toUpperCase() + crop.slice(1)}
                                   </button>
                                 ))}
                                 {parseCropType(activeCrop) === 'custom' && (
@@ -1048,7 +1349,73 @@ export default function PlanBuilder() {
                 </div>
               </div>
 
-              <div className="drill-fields">
+              {/* Second canvas section */}
+              <div className="pitch-area pitch-area--second">
+                {selectedDrill.secondCanvas ? (
+                  <>
+                    {!isMobile && (
+                      <div className="pitch-toolbar">
+                        <span className="pt-label">Pitch 2 crop:</span>
+                        {['third', 'half', 'full', 'blank', 'custom'].map(c => (
+                          <button
+                            key={c}
+                            className={`pt-btn${parseCropType(activeCrop2) === c ? ' active' : ''}`}
+                            onClick={() => handleCropChange2(c)}
+                          >
+                            {c === 'blank' ? 'Blank' : c.charAt(0).toUpperCase() + c.slice(1)}
+                          </button>
+                        ))}
+                        {parseCropType(activeCrop2) === 'custom' && (
+                          <button className="pt-btn pt-btn--edit-crop" onClick={() => setCropEditingActive2(true)}>
+                            Edit crop
+                          </button>
+                        )}
+                      </div>
+                    )}
+                    <div className="pitch-canvas-wrap">
+                      <div className="pitch-editor-wrap" style={{ cursor: activeTool ? 'crosshair' : 'default' }}>
+                        <PitchCanvas
+                          interactive
+                          isMobile={false}
+                          crop={activeCrop2}
+                          cropEditingActive={cropEditingActive2}
+                          players={selectedDrill.secondCanvas.players ?? []}
+                          arrows={selectedDrill.secondCanvas.arrows ?? []}
+                          elements={selectedDrill.secondCanvas.elements ?? []}
+                          goalSize={activeGoalSize}
+                          activeTool={activeTool}
+                          arrowStart={arrowStart2}
+                          previewLine={previewLine2}
+                          labelEditor={labelEditor2}
+                          zoneDrawing={zoneDrawing2}
+                          onSvgClick={handleSvgClick2}
+                          onSvgMouseDown={handleSvgMouseDown2}
+                          onSvgMouseMove={handleSvgMouseMove2}
+                          onSvgMouseUp={handleSvgMouseUp2}
+                          onPlayerMouseDown={handlePlayerMouseDown2}
+                          onElementMouseDown={handleElementMouseDown2}
+                          onContextMenu={handleContextMenu2}
+                          onLabelChange={setLabelEditor2}
+                          onLabelSave={saveLabelEdit2}
+                          onLabelClose={() => setLabelEditor2(null)}
+                          selectedElement={selectedElement2}
+                          onCustomCropSave={handleCustomCropSave2}
+                          onCropEditingCancel={() => setCropEditingActive2(false)}
+                        />
+                      </div>
+                    </div>
+                    <button className="add-pitch-btn add-pitch-btn--remove" onClick={handleRemoveSecondCanvas}>
+                      Remove progression pitch
+                    </button>
+                  </>
+                ) : (
+                  <button className="add-pitch-btn" onClick={handleAddSecondCanvas}>
+                    + Add progression pitch
+                  </button>
+                )}
+              </div>
+
+              <div className={`drill-fields${selectedDrill.secondCanvas ? ' drill-fields--compact' : ''}`}>
                 <div className="drill-field-col">
                   <div className="field-section">
                     <span className="fs-label">Description</span>

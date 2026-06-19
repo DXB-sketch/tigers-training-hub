@@ -14,6 +14,11 @@ dist/
 
 # OS junk
 .DS_Store
+
+CLAUDE.md
+TIGERS_PROJECT_CONTEXT.md
+PHASE*_COMPLETE.md
+DEPLOYMENT.md
 Thumbs.db
 
 # Editor
@@ -26,3 +31,4 @@ SUPABASE_SETUP.md
 PHASE1_COMPLETE.md
 PHASE2_COMPLETE.md
 supabase/
+LocalFiles/

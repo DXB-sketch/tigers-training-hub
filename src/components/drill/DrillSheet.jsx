@@ -64,15 +64,26 @@ export default function DrillSheet({ drill, plan, team, coach, current, total, o
       </div>
 
       <div className="pitch-block">
-        <div className="pitch-svg-wrap">
-          <PitchCanvas
-            crop={drill.pitchCrop}
-            players={drill.players}
-            arrows={drill.arrows}
-            elements={drill.elements}
-            goalSize="medium"
-          />
-        </div>
+        {drill.secondCanvas ? (
+          <div className="pitch-block-dual">
+            <div className="pitch-canvas-panel">
+              <div className="pitch-canvas-eyebrow">Setup</div>
+              <div className="pitch-svg-wrap">
+                <PitchCanvas crop={drill.pitchCrop} players={drill.players} arrows={drill.arrows} elements={drill.elements} goalSize="medium" />
+              </div>
+            </div>
+            <div className="pitch-canvas-panel">
+              <div className="pitch-canvas-eyebrow">Progression</div>
+              <div className="pitch-svg-wrap">
+                <PitchCanvas crop={drill.secondCanvas.pitchCrop} players={drill.secondCanvas.players} arrows={drill.secondCanvas.arrows} elements={drill.secondCanvas.elements} goalSize="medium" />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="pitch-svg-wrap">
+            <PitchCanvas crop={drill.pitchCrop} players={drill.players} arrows={drill.arrows} elements={drill.elements} goalSize="medium" />
+          </div>
+        )}
         <PitchLegend />
       </div>
 

@@ -89,6 +89,28 @@
   print-color-adjust: exact;
 }
 
+/* Dual pitch layout */
+.pitch-block-dual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.pitch-canvas-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.pitch-canvas-eyebrow {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 5px;
+}
+
 /* CONTENT GRID */
 .content-cols {
   padding: 20px 28px 0;

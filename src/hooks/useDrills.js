@@ -40,6 +40,19 @@ export function transformDrill(d) {
     players: safeParseArray(d.players),
     arrows: safeParseArray(d.arrows),
     elements: safeParseArray(d.elements),
+    secondCanvas: (() => {
+      if (!d.second_canvas) return null
+      try {
+        const sc = typeof d.second_canvas === 'string' ? JSON.parse(d.second_canvas) : d.second_canvas
+        if (!sc) return null
+        return {
+          players: safeParseArray(sc.players),
+          arrows: safeParseArray(sc.arrows),
+          elements: safeParseArray(sc.elements),
+          pitchCrop: sc.pitch_crop ?? 'full',
+        }
+      } catch { return null }
+    })(),
   }
 }
 

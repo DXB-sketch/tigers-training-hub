@@ -458,6 +458,64 @@
   }
 }
 
+/* Second pitch canvas section */
+.pitch-area--second {
+  border-top: 1px solid var(--rule);
+  padding: 12px 24px;
+}
+
+.add-pitch-btn {
+  display: block;
+  width: 100%;
+  padding: 12px 24px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  background: var(--surface);
+  border: 1.5px dashed var(--rule);
+  cursor: pointer;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+}
+
+.add-pitch-btn:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.add-pitch-btn--remove {
+  display: inline-block;
+  width: auto;
+  margin-top: 10px;
+  padding: 7px 14px;
+  border-style: solid;
+  color: var(--status-err-text);
+  border-color: var(--status-err-text);
+  background: none;
+}
+
+.add-pitch-btn--remove:hover {
+  color: var(--status-err-text);
+  border-color: var(--status-err-text);
+}
+
+/* Compact text fields when second canvas is present */
+.drill-fields--compact .drill-field-col {
+  padding: 10px 16px;
+}
+
+.drill-fields--compact .field-section {
+  margin-bottom: 10px;
+}
+
+.drill-fields--compact .fs-textarea {
+  min-height: 48px;
+  font-size: 11px;
+  padding: 5px 0;
+}
+
 /* FAB — mobile pitch tool picker */
 .pitch-canvas-wrap {
   position: relative;

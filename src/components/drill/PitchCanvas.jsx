@@ -50,6 +50,7 @@ const VIEW_BOXES = {
   half:   '0 0 720 280',
   third:  '0 0 720 185',
   custom: '0 0 720 480',
+  blank:  '0 0 720 185',
 }
 
 const GOAL_WIDTHS = {
@@ -60,6 +61,9 @@ const GOAL_WIDTHS = {
 }
 
 function PitchMarkings({ crop, goalWidth }) {
+  if (crop === 'blank') {
+    return <rect width="720" height="185" style={{ fill: 'var(--pitch-green)' }} />
+  }
   const vbHeight = crop === 'full' ? 480 : crop === 'half' ? 280 : 185
   const goalX = (720 - goalWidth) / 2
   const goalY = 5
@@ -247,8 +251,13 @@ function Element({ el, interactive, onMouseDown, onContextMenu, onTouchStart }) 
 
 function LabelEditor({ player, onLabelChange, onSave, onClose }) {
   const { cx, cy, label, name } = player
+  const labelW = 124
+  const labelH = 72
+  const aboveY = cy - 64
+  const foY = aboveY < 10 ? cy + 16 : aboveY
+  const foX = Math.max(10, Math.min(cx - labelW / 2, 720 - labelW - 10))
   return (
-    <foreignObject x={cx - 62} y={cy - 64} width="124" height="72">
+    <foreignObject x={foX} y={foY} width={labelW} height={labelH}>
       <div
         xmlns="http://www.w3.org/1999/xhtml"
         style={{ background: '#fff', border: '1px solid #ccc', padding: '6px', display: 'flex', flexDirection: 'column', gap: 4 }}
