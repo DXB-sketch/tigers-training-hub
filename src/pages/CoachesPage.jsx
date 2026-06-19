@@ -76,8 +76,9 @@ export default function CoachesPage() {
   const selectedCoach = selectedCoachId ? coachMap.get(selectedCoachId) ?? null : null
 
   return (
-    <div>
+    <>
       <TopNav />
+      <main>
       <PageHeader title="Coaches" subtitle="All coaches and their team assignments" />
 
       {error && (
@@ -88,7 +89,7 @@ export default function CoachesPage() {
       )}
 
       {loading && (
-        <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-faint)' }}>Loading...</div>
+        <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-muted)' }}>Loading...</div>
       )}
 
       {!error && !loading && (
@@ -170,6 +171,7 @@ export default function CoachesPage() {
           </div>
         </div>
       )}
-    </div>
+      </main>
+    </>
   )
 }

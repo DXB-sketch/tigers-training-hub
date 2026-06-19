@@ -135,8 +135,9 @@ export default function AccountSettings() {
   }
 
   return (
-    <div>
+    <>
       <TopNav />
+      <main>
       <PageHeader title="Account" subtitle="Your profile and settings" />
 
       <div className="account-page">
@@ -211,6 +212,7 @@ export default function AccountSettings() {
           )}
         </div>
       </div>
-    </div>
+      </main>
+    </>
   )
 }

@@ -92,7 +92,7 @@ export default function CoachDetailPanel({ coach, allAssignments, allTeams, role
         <div className="cdp-section cdp-section--last">
           <button
             className="cdp-edit-account"
-            onClick={() => navigate(`/president/users?userId=${coach.id}`)}
+            onClick={() => navigate(`/president?userId=${coach.id}`)}
           >
             Edit account →
           </button>

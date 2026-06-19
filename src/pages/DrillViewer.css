@@ -1,3 +1,10 @@
+.drill-viewer {
+  background: var(--page-bg);
+  min-height: 100vh;
+  padding: 24px 16px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 .drill-back-link {
   margin-bottom: 12px;
 }

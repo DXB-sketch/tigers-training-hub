@@ -30,44 +30,50 @@ function CoachDrillViewer({ drillId }) {
 
   if (loading) {
     return (
-      <div style={{ background: 'var(--page-bg)', minHeight: '100vh', padding: '24px 16px', fontFamily: 'Arial' }}>
+      <>
         <TopNav />
-        <div style={{ fontSize: 12, color: 'var(--ink-faint)' }}>Loading...</div>
-      </div>
+        <main className="drill-viewer">
+          <div style={{ fontSize: 12, color: 'var(--ink-muted)' }}>Loading...</div>
+        </main>
+      </>
     )
   }
 
   if (error) {
     return (
-      <div style={{ background: 'var(--page-bg)', minHeight: '100vh', padding: '24px 16px', fontFamily: 'Arial' }}>
+      <>
         <TopNav />
-        <div style={{ fontSize: 12, color: 'var(--ink-mid)' }}>
-          Could not load drill. Check your connection.&nbsp;
-          <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }}>Try again</a>
-        </div>
-      </div>
+        <main className="drill-viewer">
+          <div style={{ fontSize: 12, color: 'var(--ink-mid)' }}>
+            Could not load drill. Check your connection.&nbsp;
+            <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }}>Try again</a>
+          </div>
+        </main>
+      </>
     )
   }
 
   const coach = { name: user?.name ?? 'Unknown' }
 
   return (
-    <div style={{ background: 'var(--page-bg)', minHeight: '100vh', padding: '24px 16px', fontFamily: 'Arial' }}>
+    <>
       <TopNav />
-      <div className="drill-back-link">
-        <button onClick={() => navigate('/coach')}>&#8592; Back to dashboard</button>
-      </div>
-      <DrillSheet
-        drill={currentDrill}
-        plan={plan}
-        team={team}
-        coach={coach}
-        current={current}
-        total={total}
-        onPrev={handlePrev}
-        onNext={handleNext}
-      />
-    </div>
+      <main className="drill-viewer">
+        <div className="drill-back-link">
+          <button onClick={() => navigate('/coach')}>&#8592; Back to dashboard</button>
+        </div>
+        <DrillSheet
+          drill={currentDrill}
+          plan={plan}
+          team={team}
+          coach={coach}
+          current={current}
+          total={total}
+          onPrev={handlePrev}
+          onNext={handleNext}
+        />
+      </main>
+    </>
   )
 }
 
@@ -95,42 +101,48 @@ function CoachPlanDrillViewer({ planId, drillId }) {
 
   if (loading) {
     return (
-      <div style={{ background: 'var(--page-bg)', minHeight: '100vh', padding: '24px 16px', fontFamily: 'Arial' }}>
+      <>
         <TopNav />
-        <div style={{ fontSize: 12, color: 'var(--ink-faint)' }}>Loading...</div>
-      </div>
+        <main className="drill-viewer">
+          <div style={{ fontSize: 12, color: 'var(--ink-muted)' }}>Loading...</div>
+        </main>
+      </>
     )
   }
 
   if (error) {
     return (
-      <div style={{ background: 'var(--page-bg)', minHeight: '100vh', padding: '24px 16px', fontFamily: 'Arial' }}>
+      <>
         <TopNav />
-        <div style={{ fontSize: 12, color: 'var(--ink-mid)' }}>
-          Could not load drill. Check your connection.&nbsp;
-          <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }}>Try again</a>
-        </div>
-      </div>
+        <main className="drill-viewer">
+          <div style={{ fontSize: 12, color: 'var(--ink-mid)' }}>
+            Could not load drill. Check your connection.&nbsp;
+            <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }}>Try again</a>
+          </div>
+        </main>
+      </>
     )
   }
 
   return (
-    <div style={{ background: 'var(--page-bg)', minHeight: '100vh', padding: '24px 16px', fontFamily: 'Arial' }}>
+    <>
       <TopNav />
-      <div className="drill-back-link">
-        <button onClick={() => navigate(`/coach/plan/${planId}`)}>&#8592; Back to session</button>
-      </div>
-      <DrillSheet
-        drill={currentDrill}
-        plan={plan}
-        team={team}
-        coach={coach}
-        current={current}
-        total={total}
-        onPrev={handlePrev}
-        onNext={handleNext}
-      />
-    </div>
+      <main className="drill-viewer">
+        <div className="drill-back-link">
+          <button onClick={() => navigate(`/coach/plan/${planId}`)}>&#8592; Back to session</button>
+        </div>
+        <DrillSheet
+          drill={currentDrill}
+          plan={plan}
+          team={team}
+          coach={coach}
+          current={current}
+          total={total}
+          onPrev={handlePrev}
+          onNext={handleNext}
+        />
+      </main>
+    </>
   )
 }
 
@@ -162,39 +174,45 @@ function AdminDrillViewer({ planId }) {
 
   if (loading) {
     return (
-      <div style={{ background: 'var(--page-bg)', minHeight: '100vh', padding: '24px 16px', fontFamily: 'Arial' }}>
+      <>
         <TopNav />
-        <div style={{ fontSize: 12, color: 'var(--ink-faint)' }}>Loading...</div>
-      </div>
+        <main className="drill-viewer">
+          <div style={{ fontSize: 12, color: 'var(--ink-muted)' }}>Loading...</div>
+        </main>
+      </>
     )
   }
 
   if (error) {
     return (
-      <div style={{ background: 'var(--page-bg)', minHeight: '100vh', padding: '24px 16px', fontFamily: 'Arial' }}>
+      <>
         <TopNav />
-        <div style={{ fontSize: 12, color: 'var(--ink-mid)' }}>
-          Could not load plan. Check your connection.&nbsp;
-          <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }}>Try again</a>
-        </div>
-      </div>
+        <main className="drill-viewer">
+          <div style={{ fontSize: 12, color: 'var(--ink-mid)' }}>
+            Could not load plan. Check your connection.&nbsp;
+            <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }}>Try again</a>
+          </div>
+        </main>
+      </>
     )
   }
 
   return (
-    <div style={{ background: 'var(--page-bg)', minHeight: '100vh', padding: '24px 16px', fontFamily: 'Arial' }}>
+    <>
       <TopNav />
-      <DrillSheet
-        drill={currentDrill}
-        plan={plan}
-        team={team}
-        coach={coach}
-        current={current}
-        total={total}
-        onPrev={handlePrev}
-        onNext={handleNext}
-      />
-    </div>
+      <main className="drill-viewer">
+        <DrillSheet
+          drill={currentDrill}
+          plan={plan}
+          team={team}
+          coach={coach}
+          current={current}
+          total={total}
+          onPrev={handlePrev}
+          onNext={handleNext}
+        />
+      </main>
+    </>
   )
 }
 

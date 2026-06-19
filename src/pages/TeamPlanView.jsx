@@ -47,15 +47,16 @@ export default function TeamPlanView() {
   }
 
   return (
-    <div>
+    <>
       <TopNav />
+      <main>
       <PageHeader
         title={teamLoading ? '…' : (team?.name ?? 'Team')}
         subtitle="Published sessions"
       />
 
       {plansLoading && (
-        <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-faint)' }}>
+        <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-muted)' }}>
           Loading...
         </div>
       )}
@@ -86,6 +87,7 @@ export default function TeamPlanView() {
           })}
         </div>
       )}
-    </div>
+      </main>
+    </>
   )
 }

@@ -66,8 +66,9 @@ export default function PlanLibrary() {
   }
 
   return (
-    <div>
+    <>
       <TopNav />
+      <main>
       <PageHeader
         title="Training Plans"
         subtitle="All sessions across every team"
@@ -174,7 +175,7 @@ export default function PlanLibrary() {
       </div>
 
       {loading && (
-        <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-faint)' }}>Loading...</div>
+        <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-muted)' }}>Loading...</div>
       )}
 
       {error && (
@@ -193,6 +194,7 @@ export default function PlanLibrary() {
       {!loading && !error && plans.length > 0 && (
         <PlanList plans={plans} onDeleted={refetch} />
       )}
-    </div>
+      </main>
+    </>
   )
 }

@@ -25,8 +25,9 @@ export default function AdminDashboard() {
   function dash(val) { return loading ? '—' : val }
 
   return (
-    <div>
+    <>
       <TopNav />
+      <main>
       <PageHeader
         title="Dashboard"
         subtitle="Wednesday, 4 June 2026 · Week 4 in progress"
@@ -92,7 +93,7 @@ export default function AdminDashboard() {
       </div>
 
       {plansLoading && (
-        <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-faint)' }}>Loading...</div>
+        <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-muted)' }}>Loading...</div>
       )}
 
       {!plansLoading && !plansError && (
@@ -121,6 +122,7 @@ export default function AdminDashboard() {
           })}
         </div>
       )}
-    </div>
+      </main>
+    </>
   )
 }

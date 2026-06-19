@@ -38,6 +38,7 @@ export default function TeamTable({ teams, onSelectTeam, selectedTeamId }) {
             return (
               <tr
                 key={team.id}
+                className={`team-row team-row--${status}`}
                 onClick={() => onSelectTeam?.(team)}
                 style={isSelected ? { background: 'var(--tigers-gold-pale)' } : {}}
               >

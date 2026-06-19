@@ -104,8 +104,9 @@ export default function UserManagement() {
     .filter(g => g.users.length > 0)
 
   return (
-    <div>
+    <>
       <TopNav />
+      <main>
       <PageHeader
         title="Users"
         subtitle="Manage club accounts"
@@ -192,7 +193,7 @@ export default function UserManagement() {
                   return (
                     <div
                       key={user.id}
-                      className={`um-user-row${isSelected ? ' selected' : ''}${inactive ? ' inactive' : ''}`}
+                      className={`um-user-row um-user-row--${user.role}${isSelected ? ' selected' : ''}${inactive ? ' inactive' : ''}`}
                       onClick={() => setSelectedId(user.id)}
                     >
                       <div className="um-user-info">
@@ -231,6 +232,7 @@ export default function UserManagement() {
           </div>
         </div>
       )}
-    </div>
+      </main>
+    </>
   )
 }

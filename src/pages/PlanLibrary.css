@@ -29,7 +29,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-faint);
+  color: var(--ink-muted);
 }
 
 .npf-input,
@@ -93,7 +93,7 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #bbb;
+  color: var(--ink-muted);
   flex-shrink: 0;
 }
 
@@ -136,7 +136,7 @@
 }
 
 .filter-search::placeholder {
-  color: #bbb;
+  color: var(--ink-muted);
 }
 
 @media (max-width: 540px) {

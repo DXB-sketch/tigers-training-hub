@@ -175,8 +175,9 @@ export default function TeamManagement() {
   }
 
   return (
-    <div>
+    <>
       <TopNav />
+      <main>
       <PageHeader
         title="Teams"
         subtitle="Manage coaches, contacts and plan assignments"
@@ -426,6 +427,7 @@ export default function TeamManagement() {
           </div>
         </div>
       )}
-    </div>
+      </main>
+    </>
   )
 }

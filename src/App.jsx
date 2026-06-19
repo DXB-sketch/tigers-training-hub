@@ -3,7 +3,6 @@ import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/layout/ProtectedRoute'
 
 import Login from './pages/Login'
-import PresidentDashboard from './pages/PresidentDashboard'
 import UserManagement from './pages/UserManagement'
 import CoachDashboard from './pages/CoachDashboard'
 import CoachPlanView from './pages/CoachPlanView'
@@ -61,14 +60,6 @@ export default function App() {
           {/* President routes */}
           <Route
             path="/president"
-            element={
-              <ProtectedRoute allowedRoles={['president']}>
-                <PresidentDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/president/users"
             element={
               <ProtectedRoute allowedRoles={['president']}>
                 <UserManagement />

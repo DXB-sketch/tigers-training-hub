@@ -14,7 +14,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #bbb;
+  color: var(--ink-muted);
   padding: 10px 24px 8px;
   border-bottom: 1px solid var(--rule);
 }
@@ -31,10 +31,19 @@
   border-bottom: none;
 }
 
+.team-row--published { background: var(--status-ok-bg); }
+.team-row--draft { background: var(--status-warn-bg); }
+.team-row--no-plan { background: var(--status-warn-bg); }
+.team-row--no-coach { background: var(--status-err-bg); }
+
 .teams-table tr:hover td {
   background: #f7f5ef;
   cursor: pointer;
 }
+.team-row--published:hover td { background: var(--status-ok-bg-hover); }
+.team-row--draft:hover td,
+.team-row--no-plan:hover td { background: var(--status-warn-bg-hover); }
+.team-row--no-coach:hover td { background: var(--status-err-bg-hover); }
 
 .team-name-cell {
   font-weight: 700;
@@ -47,7 +56,7 @@
 }
 
 .no-coach {
-  color: #bbb;
+  color: var(--ink-muted);
   font-style: italic;
 }
 
@@ -56,7 +65,7 @@
   font-weight: 700;
   letter-spacing: 0.10em;
   text-transform: uppercase;
-  color: var(--tigers-gold);
+  color: var(--ink-mid);
   cursor: pointer;
   white-space: nowrap;
   background: none;

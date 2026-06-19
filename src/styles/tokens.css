@@ -13,11 +13,16 @@
   --page-bg: #e0ddd6;
   --nav-bg: #1a1a18;
   --nav-border: #2e2e2a;
+  --nav-text: #999999;
+  --nav-text-hover: #aaaaaa;
   --status-ok-bg: #e6f0dc;
+  --status-ok-bg-hover: #cfe0ba;
   --status-ok-text: #2a5e10;
   --status-warn-bg: #fdf4dc;
+  --status-warn-bg-hover: #f0e4b8;
   --status-warn-text: #7a4e00;
   --status-err-bg: #fce8e8;
+  --status-err-bg-hover: #f0d0d0;
   --status-err-text: #8a1c1c;
   --pitch-green: #2d5a1b;
   --pitch-line: #a8d880;

@@ -12,7 +12,7 @@
 .um-status-msg {
   padding: 16px 24px;
   font-size: 12px;
-  color: var(--ink-faint);
+  color: var(--ink-muted);
 }
 
 .um-status-msg--err {
@@ -54,7 +54,7 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink-faint);
+  color: var(--ink-muted);
 }
 
 .um-input {
@@ -88,7 +88,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-faint);
+  color: var(--ink-muted);
   border-bottom: 1px solid var(--rule-light);
 }
 
@@ -103,9 +103,13 @@
   transition: background 0.1s;
 }
 
-.um-user-row:hover {
-  background: var(--surface-warm);
-}
+.um-user-row--president { background: var(--status-err-bg); }
+.um-user-row--admin { background: var(--status-warn-bg); }
+.um-user-row--coach { background: var(--status-ok-bg); }
+
+.um-user-row--president:hover { background: var(--status-err-bg-hover); }
+.um-user-row--admin:hover { background: var(--status-warn-bg-hover); }
+.um-user-row--coach:hover { background: var(--status-ok-bg-hover); }
 
 .um-user-row.selected {
   background: var(--tigers-gold-pale);
@@ -131,7 +135,7 @@
 .um-inactive-label {
   font-size: 12px;
   font-weight: 400;
-  color: var(--ink-faint);
+  color: var(--ink-muted);
 }
 
 .um-user-email {
@@ -160,7 +164,7 @@
     right: 16px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--ink-faint);
+    color: var(--ink-muted);
     font-size: 16px;
   }
 

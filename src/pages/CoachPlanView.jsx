@@ -14,28 +14,33 @@ export default function CoachPlanView() {
 
   if (loading) {
     return (
-      <div>
+      <>
         <TopNav />
-        <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-faint)' }}>Loading...</div>
-      </div>
+        <main>
+          <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-muted)' }}>Loading...</div>
+        </main>
+      </>
     )
   }
 
   if (planError || !plan) {
     return (
-      <div>
+      <>
         <TopNav />
-        <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-mid)' }}>
-          Could not load session. Check your connection.&nbsp;
-          <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }}>Try again</a>
-        </div>
-      </div>
+        <main>
+          <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-mid)' }}>
+            Could not load session. Check your connection.&nbsp;
+            <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }}>Try again</a>
+          </div>
+        </main>
+      </>
     )
   }
 
   return (
-    <div>
+    <>
       <TopNav />
+      <main>
 
       <div className="session-header">
         <div className="session-date">
@@ -103,6 +108,7 @@ export default function CoachPlanView() {
           </div>
         ))}
       </div>
-    </div>
+      </main>
+    </>
   )
 }

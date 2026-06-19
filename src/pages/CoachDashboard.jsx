@@ -29,40 +29,46 @@ export default function CoachDashboard() {
 
   if (loading) {
     return (
-      <div>
+      <>
         <TopNav />
-        <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-faint)' }}>Loading...</div>
-      </div>
+        <main>
+          <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-muted)' }}>Loading...</div>
+        </main>
+      </>
     )
   }
 
   if (error) {
     return (
-      <div>
+      <>
         <TopNav />
-        <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-mid)' }}>
-          Could not load session. Check your connection.&nbsp;
-          <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }}>Try again</a>
-        </div>
-      </div>
+        <main>
+          <div style={{ padding: '16px 24px', fontSize: 12, color: 'var(--ink-mid)' }}>
+            Could not load session. Check your connection.&nbsp;
+            <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }}>Try again</a>
+          </div>
+        </main>
+      </>
     )
   }
 
   if (!plan) {
     return (
-      <div>
+      <>
         <TopNav />
-        <div style={{ padding: '24px', fontSize: 13, color: 'var(--ink-muted)', textAlign: 'center' }}>
-          No session assigned for this week. Contact your administrator.
-        </div>
-      </div>
+        <main>
+          <div style={{ padding: '24px', fontSize: 13, color: 'var(--ink-muted)', textAlign: 'center' }}>
+            No session assigned for this week. Contact your administrator.
+          </div>
+        </main>
+      </>
     )
   }
 
   return (
-    <div>
+    <>
       <TopNav />
-
+      <main>
       <div className="session-header">
         <div className="session-date">{dateStr}</div>
         <div className="session-title">Week {plan.weekNumber}: {plan.title}</div>
@@ -148,6 +154,7 @@ export default function CoachDashboard() {
           </div>
         ))}
       </div>
-    </div>
+      </main>
+    </>
   )
 }

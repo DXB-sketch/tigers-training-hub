@@ -962,14 +962,14 @@ export default function PlanBuilder() {
   }
 
   if (planLoading) {
-    return <div style={{ padding: '40px', fontFamily: 'Arial', color: 'var(--ink-faint)', fontSize: 12 }}>Loading...</div>
+    return <main style={{ padding: '40px', fontFamily: 'Arial', color: 'var(--ink-muted)', fontSize: 12 }}>Loading...</main>
   }
   if (planError || !initialPlan) {
     return (
-      <div style={{ padding: '40px', fontFamily: 'Arial', color: 'var(--ink-mid)', fontSize: 12 }}>
+      <main style={{ padding: '40px', fontFamily: 'Arial', color: 'var(--ink-mid)', fontSize: 12 }}>
         Could not load plan.&nbsp;
         <a href="#" onClick={e => { e.preventDefault(); window.location.reload() }}>Try again</a>
-      </div>
+      </main>
     )
   }
 
@@ -977,7 +977,7 @@ export default function PlanBuilder() {
   const displayTeamName = currentTeam?.name ?? initialTeam?.name ?? ''
 
   return (
-    <div style={{ fontFamily: 'Arial' }}>
+    <main style={{ fontFamily: 'Arial' }}>
       <div className="builder-top-bar">
         <button className="tb-back" onClick={() => navigate('/admin/plans')}>&#8592; Plans</button>
         <div className="tb-breadcrumb">
@@ -1484,6 +1484,6 @@ export default function PlanBuilder() {
           )}
         </div>
       </div>
-    </div>
+    </main>
   )
 }

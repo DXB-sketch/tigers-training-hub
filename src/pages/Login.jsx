@@ -49,7 +49,7 @@ export default function Login() {
   }
 
   return (
-    <div className="login-body">
+    <main className="login-body">
       <div className="login-wrap">
         <div className="club-mark">
           <div className="club-mark-bar" />
@@ -147,6 +147,6 @@ export default function Login() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

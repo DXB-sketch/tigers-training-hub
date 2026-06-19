@@ -38,7 +38,7 @@ export default function PlanList({ plans, onDeleted }) {
             return (
               <div
                 key={plan.id}
-                className="plan-item"
+                className={`plan-item plan-item--${plan.status}`}
                 onClick={() => navigate(`/admin/plans/${plan.id}`)}
               >
                 <div className="pi-week">{plan.weekNumber}</div>
