@@ -17,6 +17,11 @@ export default function Login() {
   const [resetMsg, setResetMsg] = useState('')
   const [resetError, setResetError] = useState('')
 
+  const [mode, setMode] = useState('login') // 'login' | 'set-password'
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [setPasswordError, setSetPasswordError] = useState('')
+
   useEffect(() => {
     if (loggedIn && role) {
       if (role === 'admin') navigate('/admin')
@@ -26,6 +31,18 @@ export default function Login() {
     }
   }, [loggedIn, role])
 
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        const hash = window.location.hash
+        if (hash.includes('type=invite') || hash.includes('type=recovery')) {
+          setMode('set-password')
+        }
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
   async function handleSubmit(e) {
     e.preventDefault()
     setError('')
@@ -34,6 +51,25 @@ export default function Login() {
       setLoggedIn(true)
     } else {
       setError(result.error)
+    }
+  }
+
+  async function handleSetPassword(e) {
+    e.preventDefault()
+    setSetPasswordError('')
+    if (newPassword.length < 8) {
+      setSetPasswordError('Password must be at least 8 characters.')
+      return
+    }
+    if (newPassword !== confirmPassword) {
+      setSetPasswordError('Passwords do not match.')
+      return
+    }
+    const { error: err } = await supabase.auth.updateUser({ password: newPassword })
+    if (err) {
+      setSetPasswordError(err.message)
+    } else {
+      setLoggedIn(true)
     }
   }
 
@@ -59,7 +95,38 @@ export default function Login() {
         </div>
 
         <div className="form-card">
-          {forgotMode ? (
+          {mode === 'set-password' ? (
+            <>
+              <div className="form-title">Set your password</div>
+              <form onSubmit={handleSetPassword}>
+                <div className="form-field">
+                  <label htmlFor="new-password">New password</label>
+                  <input
+                    id="new-password"
+                    type="password"
+                    value={newPassword}
+                    onChange={e => setNewPassword(e.target.value)}
+                    autoComplete="new-password"
+                    minLength={8}
+                  />
+                </div>
+                <div className="form-field">
+                  <label htmlFor="confirm-password">Confirm password</label>
+                  <input
+                    id="confirm-password"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={e => setConfirmPassword(e.target.value)}
+                    autoComplete="new-password"
+                  />
+                </div>
+                {setPasswordError && (
+                  <div className="form-error">{setPasswordError}</div>
+                )}
+                <button type="submit" className="sign-in-btn">Set Password</button>
+              </form>
+            </>
+          ) : forgotMode ? (
             <>
               <div className="form-title">Reset password</div>
               <div className="form-sub">Enter your email address to receive a reset link</div>
