@@ -171,8 +171,9 @@ export default function UserDetailPanel({ user, inactive, onDeactivate, onReacti
             onChange={e => setRole(e.target.value)}
             onBlur={() => saveField('role', role)}
           >
-            <option value="coach">Coach</option>
             <option value="admin">Admin</option>
+            <option value="coach">Coach</option>
+            <option value="canteen">Canteen</option>
             <option value="president">President</option>
           </select>
           {fieldMsg.role && (

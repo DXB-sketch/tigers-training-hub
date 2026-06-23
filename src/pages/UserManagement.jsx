@@ -8,8 +8,8 @@ import { useUsers } from '../hooks/useUsers'
 import supabase from '../lib/supabase'
 import './UserManagement.css'
 
-const ROLE_ORDER = ['president', 'admin', 'coach']
-const ROLE_LABELS = { president: 'President', admin: 'Admin', coach: 'Coach' }
+const ROLE_ORDER = ['president', 'admin', 'coach', 'canteen']
+const ROLE_LABELS = { president: 'President', admin: 'Admin', coach: 'Coach', canteen: 'Canteen' }
 const EDGE_FN = 'https://aotrenxljjsqjsyseyui.supabase.co/functions/v1/manage-user'
 
 async function callManageUser(body) {
@@ -165,8 +165,9 @@ export default function UserManagement() {
                         onChange={e => setInviteRole(e.target.value)}
                         className="um-input"
                       >
-                        <option value="coach">Coach</option>
                         <option value="admin">Admin</option>
+                        <option value="coach">Coach</option>
+                        <option value="canteen">Canteen</option>
                         <option value="president">President</option>
                       </select>
                     </div>
