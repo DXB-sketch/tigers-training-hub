@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
 import supabase from '../lib/supabase'
 
 export function formatShiftTime(start_time, end_time) {
@@ -16,11 +17,16 @@ function toISODate(date) {
 }
 
 export default function useCanteenShifts() {
+  const { user } = useAuth()
   const [shifts, setShifts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false)
+      return
+    }
     async function fetch() {
       const today = new Date()
       const plus14 = new Date(today)
@@ -28,7 +34,11 @@ export default function useCanteenShifts() {
 
       const { data, error: err } = await supabase
         .from('canteen_shifts')
-        .select('*')
+        .select(`
+          *,
+          canteen_shift_assignments!inner(worker_id)
+        `)
+        .eq('canteen_shift_assignments.worker_id', user.id)
         .gte('shift_date', toISODate(today))
         .lte('shift_date', toISODate(plus14))
         .order('shift_date', { ascending: true })
@@ -39,7 +49,7 @@ export default function useCanteenShifts() {
       setLoading(false)
     }
     fetch()
-  }, [])
+  }, [user])
 
   return { shifts, loading, error }
 }

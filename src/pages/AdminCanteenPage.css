@@ -327,3 +327,78 @@
   outline: 2px solid var(--tigers-gold);
   outline-offset: 1px;
 }
+
+/* ── Assignment row ── */
+.acp-assign-row {
+  padding: 6px 12px 10px;
+  border-bottom: 1px solid var(--rule-light);
+}
+
+.acp-assign-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-right: 8px;
+}
+
+.acp-assign-chips {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.acp-assign-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  padding: 2px 8px;
+}
+
+.acp-assign-remove {
+  font-size: 12px;
+  color: var(--ink-faint);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+  line-height: 1;
+}
+
+.acp-assign-remove:hover {
+  color: var(--status-err-text);
+}
+
+.acp-assign-btn {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--tigers-gold);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+}
+
+.acp-assign-empty,
+.acp-assign-all-assigned {
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.acp-assign-select {
+  font-size: 11px;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  padding: 3px 6px;
+  font-family: inherit;
+}

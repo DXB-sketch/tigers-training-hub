@@ -51,13 +51,14 @@ function relativeTime(isoString) {
 // ─────────────────────────────────────────────
 // SHIFTS TAB
 // ─────────────────────────────────────────────
-function ShiftsTab({ shifts, createShift, updateShift, deleteShift, onNewShift, createMode, setCreateMode }) {
+function ShiftsTab({ shifts, createShift, updateShift, deleteShift, onNewShift, createMode, setCreateMode, canteenWorkers, assignWorker, unassignWorker }) {
   const [newFields, setNewFields] = useState({ title: '', shift_date: '', start_time: '', end_time: '' })
   const [editId, setEditId] = useState(null)
   const [editFields, setEditFields] = useState({})
   const [deleteId, setDeleteId] = useState(null)
   const [deleteError, setDeleteError] = useState({})
   const [saving, setSaving] = useState(false)
+  const [assignOpenId, setAssignOpenId] = useState(null)
 
   const today = todayISO()
   const upcoming = shifts
@@ -104,6 +105,63 @@ function ShiftsTab({ shifts, createShift, updateShift, deleteShift, onNewShift, 
     }
   }
 
+  function renderAssignRow(shift) {
+    const assignedWorkers = shift.canteen_shift_assignments || []
+    const assignedIds = new Set(assignedWorkers.map(a => a.worker_id))
+    const available = (canteenWorkers || []).filter(w => !assignedIds.has(w.id))
+
+    return (
+      <tr key={shift.id + '-assign'}>
+        <td colSpan={4} className="acp-assign-row">
+          <span className="acp-assign-label">Assigned:</span>
+          <span className="acp-assign-chips">
+            {assignedWorkers.length === 0 ? (
+              <span className="acp-assign-empty">No workers assigned</span>
+            ) : (
+              assignedWorkers.map(a => (
+                <span key={a.worker_id} className="acp-assign-chip">
+                  {a.profiles?.name}
+                  <button
+                    className="acp-assign-remove"
+                    onClick={() => unassignWorker(shift.id, a.worker_id)}
+                  >×</button>
+                </span>
+              ))
+            )}
+            {assignOpenId === shift.id ? (
+              available.length === 0 ? (
+                <span className="acp-assign-all-assigned">All workers assigned</span>
+              ) : (
+                <select
+                  className="acp-assign-select"
+                  autoFocus
+                  defaultValue=""
+                  onChange={e => {
+                    if (e.target.value) {
+                      assignWorker(shift.id, e.target.value)
+                      setAssignOpenId(null)
+                    }
+                  }}
+                  onBlur={() => setAssignOpenId(null)}
+                >
+                  <option value="" disabled>Select worker…</option>
+                  {available.map(w => (
+                    <option key={w.id} value={w.id}>{w.name}</option>
+                  ))}
+                </select>
+              )
+            ) : (
+              <button
+                className="acp-assign-btn"
+                onClick={() => setAssignOpenId(shift.id)}
+              >+ Assign</button>
+            )}
+          </span>
+        </td>
+      </tr>
+    )
+  }
+
   function renderRow(shift) {
     const isEditing = editId === shift.id
     const isDeleting = deleteId === shift.id
@@ -111,19 +169,22 @@ function ShiftsTab({ shifts, createShift, updateShift, deleteShift, onNewShift, 
 
     if (isEditing) {
       return (
-        <tr key={shift.id}>
-          <td><input className="acp-input" type="date" value={editFields.shift_date} onChange={e => setEditFields(f => ({ ...f, shift_date: e.target.value }))} /></td>
-          <td><input className="acp-input" type="text" value={editFields.title} onChange={e => setEditFields(f => ({ ...f, title: e.target.value }))} /></td>
-          <td>
-            <input className="acp-input acp-input--sm" type="time" value={editFields.start_time} onChange={e => setEditFields(f => ({ ...f, start_time: e.target.value }))} />
-            {' – '}
-            <input className="acp-input acp-input--sm" type="time" value={editFields.end_time} onChange={e => setEditFields(f => ({ ...f, end_time: e.target.value }))} />
-          </td>
-          <td className="acp-actions">
-            <button className="acp-act-link acp-act-link--gold" onClick={() => handleSaveEdit(shift.id)} disabled={saving}>Save</button>
-            <button className="acp-act-link" onClick={() => setEditId(null)}>Cancel</button>
-          </td>
-        </tr>
+        <>
+          <tr key={shift.id}>
+            <td><input className="acp-input" type="date" value={editFields.shift_date} onChange={e => setEditFields(f => ({ ...f, shift_date: e.target.value }))} /></td>
+            <td><input className="acp-input" type="text" value={editFields.title} onChange={e => setEditFields(f => ({ ...f, title: e.target.value }))} /></td>
+            <td>
+              <input className="acp-input acp-input--sm" type="time" value={editFields.start_time} onChange={e => setEditFields(f => ({ ...f, start_time: e.target.value }))} />
+              {' – '}
+              <input className="acp-input acp-input--sm" type="time" value={editFields.end_time} onChange={e => setEditFields(f => ({ ...f, end_time: e.target.value }))} />
+            </td>
+            <td className="acp-actions">
+              <button className="acp-act-link acp-act-link--gold" onClick={() => handleSaveEdit(shift.id)} disabled={saving}>Save</button>
+              <button className="acp-act-link" onClick={() => setEditId(null)}>Cancel</button>
+            </td>
+          </tr>
+          {renderAssignRow(shift)}
+        </>
       )
     }
 
@@ -153,6 +214,7 @@ function ShiftsTab({ shifts, createShift, updateShift, deleteShift, onNewShift, 
             <td colSpan={4} className="acp-row-err">{errMsg}</td>
           </tr>
         )}
+        {renderAssignRow(shift)}
       </>
     )
   }
@@ -415,10 +477,11 @@ function WishlistTab({ wishlist, updateWishStatus, addItem }) {
 // ─────────────────────────────────────────────
 export default function AdminCanteenPage() {
   const {
-    shifts, pendingApprovals, clockHistory, wishlist,
+    shifts, pendingApprovals, clockHistory, wishlist, canteenWorkers,
     loading, refetch,
     createShift, updateShift, deleteShift,
     approveEvent, rejectEvent,
+    assignWorker, unassignWorker,
     updateWishStatus, addItem,
   } = useAdminCanteen()
 
@@ -470,6 +533,9 @@ export default function AdminCanteenPage() {
               deleteShift={deleteShift}
               createMode={createMode}
               setCreateMode={setCreateMode}
+              canteenWorkers={canteenWorkers}
+              assignWorker={assignWorker}
+              unassignWorker={unassignWorker}
             />
           )}
           {activeTab === 'approvals' && (
