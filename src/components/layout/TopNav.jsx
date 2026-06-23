@@ -29,6 +29,69 @@ export default function TopNav() {
     setHamburgerOpen(false)
   }
 
+  if (role === 'canteen') {
+    return (
+      <nav className="top-nav" ref={navRef}>
+        <span className="nav-club">Bribie Tigers</span>
+        <div className="nav-links">
+          <NavLink
+            to="/canteen"
+            end
+            className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}
+          >
+            Schedule
+          </NavLink>
+          <NavLink
+            to="/canteen?tab=wishlist"
+            className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}
+          >
+            Wish List
+          </NavLink>
+        </div>
+        <div className="nav-right nav-right--desktop">
+          <span className="nav-user">{user?.name}</span>
+          <span className="nav-divider" />
+          <span className="nav-role">Canteen</span>
+          <button className="nav-signout" onClick={handleLogout}>
+            Sign out
+          </button>
+        </div>
+        <button
+          className="nav-hamburger"
+          aria-label="Menu"
+          onClick={() => setHamburgerOpen(v => !v)}
+        >
+          <div className="hamburger-line" />
+          <div className="hamburger-line" />
+          <div className="hamburger-line" />
+        </button>
+        {hamburgerOpen && (
+          <div className="nav-dropdown">
+            <NavLink
+              to="/canteen"
+              end
+              className={({ isActive }) => 'nav-dropdown-item' + (isActive ? ' active' : '')}
+              onClick={handleNavClick}
+            >
+              Schedule
+            </NavLink>
+            <NavLink
+              to="/canteen?tab=wishlist"
+              className={({ isActive }) => 'nav-dropdown-item' + (isActive ? ' active' : '')}
+              onClick={handleNavClick}
+            >
+              Wish List
+            </NavLink>
+            <div className="nav-dropdown-role">Canteen</div>
+            <button className="nav-dropdown-item nav-dropdown-signout" onClick={() => { handleNavClick(); handleLogout() }}>
+              Sign out
+            </button>
+          </div>
+        )}
+      </nav>
+    )
+  }
+
   if (role === 'coach') {
     return (
       <nav className="top-nav" ref={navRef}>
@@ -114,6 +177,12 @@ export default function TopNav() {
         >
           Training Plans
         </NavLink>
+        <NavLink
+          to="/admin/canteen"
+          className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}
+        >
+          Canteen
+        </NavLink>
       </div>
       <div className="nav-right nav-right--desktop">
         <span className="nav-user">{user?.name}</span>
@@ -177,6 +246,13 @@ export default function TopNav() {
             onClick={handleNavClick}
           >
             Training Plans
+          </NavLink>
+          <NavLink
+            to="/admin/canteen"
+            className={({ isActive }) => 'nav-dropdown-item' + (isActive ? ' active' : '')}
+            onClick={handleNavClick}
+          >
+            Canteen
           </NavLink>
           <NavLink
             to="/account"

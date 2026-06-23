@@ -15,6 +15,8 @@ import PlanBuilder from './pages/PlanBuilder'
 import PrintView from './pages/PrintView'
 import TeamPlanView from './pages/TeamPlanView'
 import AccountSettings from './pages/AccountSettings'
+import CanteenDashboard from './pages/CanteenDashboard'
+import AdminCanteenPage from './pages/AdminCanteenPage'
 
 export default function App() {
   return (
@@ -132,6 +134,18 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Canteen routes */}
+          <Route path="/canteen" element={
+            <ProtectedRoute allowedRoles={['canteen']}>
+              <CanteenDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/canteen" element={
+            <ProtectedRoute allowedRoles={['admin', 'president']}>
+              <AdminCanteenPage />
+            </ProtectedRoute>
+          } />
 
           {/* Account settings — all roles */}
           <Route

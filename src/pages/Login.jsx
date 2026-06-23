@@ -21,6 +21,7 @@ export default function Login() {
     if (loggedIn && role) {
       if (role === 'admin') navigate('/admin')
       else if (role === 'president') navigate('/president')
+      else if (role === 'canteen') navigate('/canteen')
       else navigate('/coach')
     }
   }, [loggedIn, role])
