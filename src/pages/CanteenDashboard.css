@@ -1,0 +1,292 @@
+.cd-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--surface);
+}
+
+/* ---------- In-page tab nav ---------- */
+.cd-tab-nav {
+  background: var(--nav-bg);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 20px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.cd-tab-link {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--nav-text);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  height: 44px;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+  margin-bottom: -1px;
+}
+
+.cd-tab-link--active {
+  color: var(--surface);
+  border-bottom-color: var(--tigers-gold);
+}
+
+/* ---------- Page header ---------- */
+.cd-page-head {
+  padding: 18px 20px 14px;
+  border-bottom: 2.5px solid var(--ink);
+  background: var(--surface);
+}
+
+.cd-page-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 4px;
+}
+
+.cd-page-sub {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+/* ---------- Today block ---------- */
+.cd-today {
+  background: var(--surface-warm);
+  padding: 18px 20px 20px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.cd-eyebrow {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tigers-gold);
+  margin: 0 0 8px;
+}
+
+.cd-shift-time {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 2px;
+}
+
+.cd-shift-name {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin: 0 0 14px;
+}
+
+.cd-no-shift {
+  font-size: 13px;
+  color: var(--ink-muted);
+  text-align: center;
+  margin: 0 0 14px;
+  padding: 10px 0 4px;
+}
+
+.cd-status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.cd-clock-meta {
+  font-size: 11px;
+  color: var(--ink-faint);
+  margin: 8px 0 0;
+}
+
+.cd-pending-note {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin: 10px 0 0;
+}
+
+/* ---------- Clock button ---------- */
+.cd-clock-btn {
+  background: var(--ink);
+  color: var(--tigers-gold);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 14px 18px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  min-height: 48px;
+  font-family: inherit;
+}
+
+.cd-clock-btn--out {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+}
+
+.cd-clock-btn:active { opacity: 0.85; }
+
+/* ---------- Status pills ---------- */
+.cd-pill {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  cursor: default;
+  white-space: nowrap;
+}
+
+.cd-pill--ok  { background: var(--status-ok-bg);   color: var(--status-ok-text); }
+.cd-pill--warn { background: var(--status-warn-bg); color: var(--status-warn-text); }
+.cd-pill--err  { background: var(--status-err-bg);  color: var(--status-err-text); }
+
+/* ---------- Sections ---------- */
+.cd-section {
+  padding: 18px 20px 6px;
+}
+
+.cd-section-head {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  border-bottom: 1.5px solid var(--tigers-gold);
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+  width: 100%;
+}
+
+.cd-section-note {
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin: 8px 0 4px;
+}
+
+.cd-faint {
+  font-size: 10px;
+  color: var(--ink-faint);
+}
+
+/* ---------- Upcoming shift rows ---------- */
+.cd-shift-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule-light);
+  gap: 12px;
+}
+
+.cd-shift-row:last-of-type { border-bottom: none; }
+
+.cd-shift-date {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 2px;
+}
+
+.cd-shift-desc {
+  font-size: 12px;
+  color: var(--ink-mid);
+  margin: 0;
+}
+
+.cd-shift-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.cd-shift-clock {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+}
+
+.cd-shift-countdown {
+  font-size: 10px;
+  color: var(--ink-faint);
+  margin: 2px 0 0;
+}
+
+.cd-fortnight-note {
+  font-size: 10px;
+  color: var(--ink-faint);
+  padding: 10px 0 18px;
+}
+
+/* ---------- Wish list ---------- */
+.cd-wish-row {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule-light);
+}
+
+.cd-wish-row:last-child { border-bottom: none; }
+
+.cd-wish-text {
+  font-size: 13px;
+  color: var(--ink-mid);
+  margin: 0 0 6px;
+  line-height: 1.4;
+}
+
+.cd-wish-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cd-wish-meta-text {
+  font-size: 10px;
+  color: var(--ink-faint);
+}
+
+.cd-wish-add {
+  padding: 16px 20px 22px;
+}
+
+.cd-wish-input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  padding: 11px 12px;
+  margin-bottom: 10px;
+  background: var(--surface);
+}
+
+.cd-wish-input:focus {
+  outline: 2px solid var(--tigers-gold);
+  outline-offset: 1px;
+}
+
+/* ---------- Footer ---------- */
+.cd-footer {
+  margin-top: auto;
+  padding: 14px 20px;
+  border-top: 1px solid var(--rule-light);
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}

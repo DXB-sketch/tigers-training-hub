@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Canteen — Bribie Tigers FC</title>
+<style>
+  :root{
+    --tigers-gold:#c88000;
+    --tigers-gold-pale:#fdf6e3;
+    --ink:#1a1a18;
+    --ink-mid:#2a2a26;
+    --ink-muted:#666666;
+    --ink-faint:#888888;
+    --rule:#d8d4cc;
+    --rule-light:#eeebe4;
+    --surface:#fdfcf9;
+    --surface-warm:#f5f2eb;
+    --surface-meta:#f0ede6;
+    --page-bg:#e0ddd6;
+    --nav-bg:#1a1a18;
+    --nav-border:#2e2e2a;
+    --status-ok-bg:#e6f0dc;
+    --status-ok-text:#2a5e10;
+    --status-warn-bg:#fdf4dc;
+    --status-warn-text:#7a4e00;
+    --status-err-bg:#fce8e8;
+    --status-err-text:#8a1c1c;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:var(--page-bg);
+    color:var(--ink-mid);
+    display:flex;
+    justify-content:center;
+    min-height:100vh;
+  }
+
+  .app-frame{
+    width:100%;
+    max-width:430px;
+    background:var(--surface);
+    box-shadow:0 0 0 1px var(--rule);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- Top nav ---------- */
+  .top-nav{
+    background:var(--nav-bg);
+    height:52px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 16px;
+    flex-shrink:0;
+  }
+  .nav-club{
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--tigers-gold);
+    white-space:nowrap;
+  }
+  .nav-links{
+    display:flex;
+    gap:18px;
+    height:100%;
+  }
+  .nav-link{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.10em;
+    text-transform:uppercase;
+    color:#666;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    height:100%;
+    border-bottom:2px solid transparent;
+    margin-bottom:-1px;
+    background:none;
+    border-top:none;
+    border-left:none;
+    border-right:none;
+    cursor:pointer;
+    font-family:inherit;
+    padding:0;
+  }
+  .nav-link.active{
+    color:var(--surface);
+    border-bottom:2px solid var(--tigers-gold);
+  }
+  .nav-role{
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:#999;
+    white-space:nowrap;
+  }
+
+  /* ---------- Page header ---------- */
+  .page-head{
+    padding:18px 20px 14px;
+    border-bottom:2.5px solid var(--ink);
+    background:var(--surface);
+  }
+  .page-title{
+    font-size:20px;
+    font-weight:700;
+    color:var(--ink);
+    margin:0 0 4px;
+  }
+  .page-sub{
+    font-size:12px;
+    color:var(--ink-muted);
+    margin:0;
+  }
+
+  /* ---------- Views ---------- */
+  .view{ display:none; }
+  .view.active{ display:block; }
+
+  /* ---------- Today shift block ---------- */
+  .today-shift{
+    background:var(--surface-warm);
+    padding:18px 20px 20px;
+    border-bottom:1px solid var(--rule);
+  }
+  .eyebrow{
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--tigers-gold);
+    margin:0 0 8px;
+  }
+  .shift-time{
+    font-size:20px;
+    font-weight:700;
+    color:var(--ink);
+    margin:0 0 2px;
+  }
+  .shift-name{
+    font-size:12px;
+    color:var(--ink-muted);
+    margin:0 0 14px;
+  }
+  .clock-status-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .clock-meta{
+    font-size:11px;
+    color:var(--ink-faint);
+    margin:8px 0 0;
+  }
+  .no-shift{
+    font-size:13px;
+    color:var(--ink-muted);
+    text-align:center;
+    padding:10px 0 4px;
+  }
+  .no-shift-next{
+    font-size:11px;
+    color:var(--ink-faint);
+    text-align:center;
+    margin-top:4px;
+  }
+
+  /* ---------- Buttons ---------- */
+  .primary-btn{
+    background:var(--ink);
+    color:var(--tigers-gold);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    padding:14px 18px;
+    border:none;
+    cursor:pointer;
+    width:100%;
+    min-height:48px;
+    font-family:inherit;
+  }
+  .primary-btn:active{ opacity:0.85; }
+  .primary-btn.is-clocked-in{
+    background:var(--surface);
+    color:var(--ink);
+    border:1.5px solid var(--ink);
+  }
+
+  .secondary-btn{
+    background:var(--surface);
+    color:var(--ink);
+    border:1.5px solid var(--ink);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    padding:10px 16px;
+    cursor:pointer;
+    font-family:inherit;
+  }
+
+  /* ---------- Status pills ---------- */
+  .status-pill{
+    display:inline-block;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:0.10em;
+    text-transform:uppercase;
+    padding:3px 9px;
+    cursor:default;
+    white-space:nowrap;
+  }
+  .status-ok{ background:var(--status-ok-bg); color:var(--status-ok-text); }
+  .status-warn{ background:var(--status-warn-bg); color:var(--status-warn-text); }
+  .status-err{ background:var(--status-err-bg); color:var(--status-err-text); }
+  .status-pill.tappable{ cursor:pointer; }
+
+  /* ---------- Section ---------- */
+  .section{
+    padding:18px 20px 6px;
+  }
+  .section-head{
+    display:block;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--ink);
+    border-bottom:1.5px solid var(--tigers-gold);
+    padding-bottom:4px;
+    margin-bottom:4px;
+    width:100%;
+  }
+  .section-note{
+    font-size:11px;
+    color:var(--ink-muted);
+    margin:8px 0 4px;
+  }
+
+  /* ---------- Shift rows ---------- */
+  .shift-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    padding:12px 0;
+    border-bottom:1px solid var(--rule-light);
+    gap:12px;
+  }
+  .shift-row:last-child{ border-bottom:none; }
+  .shift-date{
+    font-size:12px;
+    font-weight:700;
+    color:var(--ink);
+    margin:0 0 2px;
+  }
+  .shift-desc{
+    font-size:12px;
+    color:var(--ink-mid);
+    margin:0;
+  }
+  .shift-right{
+    text-align:right;
+    flex-shrink:0;
+  }
+  .shift-clock{
+    font-size:12px;
+    font-weight:700;
+    color:var(--ink);
+    margin:0;
+  }
+  .shift-countdown{
+    font-size:10px;
+    color:var(--ink-faint);
+    margin:2px 0 0;
+  }
+
+  .fortnight-note{
+    font-size:10px;
+    color:var(--ink-faint);
+    padding:10px 0 18px;
+    border-bottom:none;
+  }
+
+  /* ---------- Wish list ---------- */
+  .wish-row{
+    padding:12px 0;
+    border-bottom:1px solid var(--rule-light);
+  }
+  .wish-row:last-child{ border-bottom:none; }
+  .wish-text{
+    font-size:13px;
+    color:var(--ink-mid);
+    margin:0 0 6px;
+    line-height:1.4;
+  }
+  .wish-meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .wish-meta-text{
+    font-size:10px;
+    color:var(--ink-faint);
+  }
+
+  .wish-add{
+    padding:16px 20px 22px;
+  }
+  .wish-input{
+    width:100%;
+    font-family:inherit;
+    font-size:13px;
+    color:var(--ink);
+    border:1.5px solid var(--ink);
+    padding:11px 12px;
+    margin-bottom:10px;
+    background:var(--surface);
+  }
+  .wish-input:focus{
+    outline:2px solid var(--tigers-gold);
+    outline-offset:1px;
+  }
+
+  /* ---------- Footer ---------- */
+  .page-footer{
+    margin-top:auto;
+    padding:14px 20px;
+    border-top:1px solid var(--rule-light);
+    display:flex;
+    justify-content:space-between;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:0.10em;
+    text-transform:uppercase;
+    color:#bbb;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-frame">
+
+  <nav class="top-nav">
+    <span class="nav-club">Bribie Tigers</span>
+    <div class="nav-links">
+      <button class="nav-link active" data-tab="schedule">Schedule</button>
+      <button class="nav-link" data-tab="wishlist">Wish List</button>
+    </div>
+    <span class="nav-role">Canteen</span>
+  </nav>
+
+  <div class="page-head">
+    <h1 class="page-title" id="pageTitle">My Shifts</h1>
+    <p class="page-sub" id="pageSub">Sun 21 Jun – Sat 4 Jul · published 2 weeks ahead</p>
+  </div>
+
+  <!-- ================= SCHEDULE VIEW ================= -->
+  <div class="view active" id="scheduleView">
+
+    <div class="today-shift">
+      <p class="eyebrow">Today's Shift · Sun 21 Jun</p>
+      <p class="shift-time">9:00 AM – 1:00 PM</p>
+      <p class="shift-name">Sunday Social Canteen</p>
+
+      <div class="clock-status-row">
+        <span class="status-pill status-warn" id="clockPill">Not Clocked In</span>
+      </div>
+
+      <button class="primary-btn" id="clockBtn">Clock In</button>
+      <p class="clock-meta" id="clockMeta">Tap to clock in once you arrive at the canteen.</p>
+    </div>
+
+    <div class="section">
+      <span class="section-head">Upcoming Shifts</span>
+
+      <div class="shift-row">
+        <div>
+          <p class="shift-date">Tue 23 Jun</p>
+          <p class="shift-desc">Tuesday Training BBQ</p>
+        </div>
+        <div class="shift-right">
+          <p class="shift-clock">4:30–6:30 PM</p>
+          <p class="shift-countdown">in 2 days</p>
+        </div>
+      </div>
+
+      <div class="shift-row">
+        <div>
+          <p class="shift-date">Thu 25 Jun</p>
+          <p class="shift-desc">Thursday Training Canteen</p>
+        </div>
+        <div class="shift-right">
+          <p class="shift-clock">4:30–6:30 PM</p>
+          <p class="shift-countdown">in 4 days</p>
+        </div>
+      </div>
+
+      <div class="shift-row">
+        <div>
+          <p class="shift-date">Sat 27 Jun</p>
+          <p class="shift-desc">Home Games Canteen</p>
+        </div>
+        <div class="shift-right">
+          <p class="shift-clock">8:00 AM–12:00 PM</p>
+          <p class="shift-countdown">in 6 days</p>
+        </div>
+      </div>
+
+      <div class="shift-row">
+        <div>
+          <p class="shift-date">Tue 30 Jun</p>
+          <p class="shift-desc">Tuesday Training BBQ</p>
+        </div>
+        <div class="shift-right">
+          <p class="shift-clock">4:30–6:30 PM</p>
+          <p class="shift-countdown">in 9 days</p>
+        </div>
+      </div>
+
+      <div class="shift-row">
+        <div>
+          <p class="shift-date">Thu 2 Jul</p>
+          <p class="shift-desc">Thursday Training Canteen</p>
+        </div>
+        <div class="shift-right">
+          <p class="shift-clock">4:30–6:30 PM</p>
+          <p class="shift-countdown">in 11 days</p>
+        </div>
+      </div>
+
+      <div class="shift-row">
+        <div>
+          <p class="shift-date">Sat 4 Jul</p>
+          <p class="shift-desc">Home Games Canteen</p>
+        </div>
+        <div class="shift-right">
+          <p class="shift-clock">8:00 AM–12:00 PM</p>
+          <p class="shift-countdown">in 13 days</p>
+        </div>
+      </div>
+
+      <p class="fortnight-note">Shifts are published up to two weeks ahead. Check back for new dates.</p>
+    </div>
+  </div>
+
+  <!-- ================= WISH LIST VIEW ================= -->
+  <div class="view" id="wishlistView">
+
+    <div class="section" style="padding-top:18px;">
+      <span class="section-head">Wish List</span>
+      <p class="section-note">Notes and items the canteen needs &mdash; stock, equipment, repairs. Reviewed weekly. Tap a tag to mark it sorted.</p>
+    </div>
+
+    <div class="section" style="padding-top:0;" id="wishList">
+
+      <div class="wish-row">
+        <p class="wish-text">Till float was $20 short last week, please double check before locking up.</p>
+        <div class="wish-meta">
+          <span class="wish-meta-text">Dave K. · Today</span>
+          <span class="status-pill status-err tappable" data-state="urgent">Urgent</span>
+        </div>
+      </div>
+
+      <div class="wish-row">
+        <p class="wish-text">Need more napkins, two boxes at least.</p>
+        <div class="wish-meta">
+          <span class="wish-meta-text">Sarah M. · 3 days ago</span>
+          <span class="status-pill status-warn tappable" data-state="requested">Requested</span>
+        </div>
+      </div>
+
+      <div class="wish-row">
+        <p class="wish-text">New tongs for the BBQ, the long ones are bent and don't grip.</p>
+        <div class="wish-meta">
+          <span class="wish-meta-text">Mel R. · 1 week ago</span>
+          <span class="status-pill status-warn tappable" data-state="requested">Requested</span>
+        </div>
+      </div>
+
+      <div class="wish-row">
+        <p class="wish-text">Order more sausage rolls, sold out by 10am last Saturday.</p>
+        <div class="wish-meta">
+          <span class="wish-meta-text">Sarah M. · 5 days ago</span>
+          <span class="status-pill status-ok tappable" data-state="done">Got It</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="wish-add">
+      <input type="text" class="wish-input" id="newWishText" placeholder="Add something the canteen needs…" maxlength="140">
+      <button class="primary-btn" id="addWishBtn">Add to Wish List</button>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Bribie Tigers FC</span>
+    <span>Canteen Portal</span>
+  </div>
+
+</div>
+
+<script>
+  // ---------- Tab switching ----------
+  const navLinks = document.querySelectorAll('.nav-link');
+  const views = {
+    schedule: document.getElementById('scheduleView'),
+    wishlist: document.getElementById('wishlistView')
+  };
+  const headerText = {
+    schedule: { title: 'My Shifts', sub: 'Sun 21 Jun – Sat 4 Jul · published 2 weeks ahead' },
+    wishlist: { title: 'Wish List', sub: 'Notes & items for the canteen' }
+  };
+  const pageTitle = document.getElementById('pageTitle');
+  const pageSub = document.getElementById('pageSub');
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      const tab = link.dataset.tab;
+      navLinks.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+      Object.values(views).forEach(v => v.classList.remove('active'));
+      views[tab].classList.add('active');
+      pageTitle.textContent = headerText[tab].title;
+      pageSub.textContent = headerText[tab].sub;
+    });
+  });
+
+  // ---------- Clock in / out ----------
+  const clockBtn = document.getElementById('clockBtn');
+  const clockPill = document.getElementById('clockPill');
+  const clockMeta = document.getElementById('clockMeta');
+
+  let clockedIn = false;
+  let clockInAt = null;
+  let timerInterval = null;
+
+  function formatTime(d){
+    let h = d.getHours();
+    const m = d.getMinutes();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12; if(h === 0) h = 12;
+    return h + ':' + String(m).padStart(2,'0') + ' ' + ampm;
+  }
+
+  function formatElapsed(ms){
+    const totalSec = Math.floor(ms / 1000);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    return h + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }
+
+  function tick(){
+    const elapsed = Date.now() - clockInAt.getTime();
+    clockMeta.textContent = 'Clocked in at ' + formatTime(clockInAt) + ' · ' + formatElapsed(elapsed) + ' on shift';
+  }
+
+  clockBtn.addEventListener('click', () => {
+    if(!clockedIn){
+      clockedIn = true;
+      clockInAt = new Date();
+      clockBtn.textContent = 'Clock Out';
+      clockBtn.classList.add('is-clocked-in');
+      clockPill.textContent = 'Clocked In';
+      clockPill.classList.remove('status-warn');
+      clockPill.classList.add('status-ok');
+      tick();
+      timerInterval = setInterval(tick, 1000);
+    } else {
+      clockedIn = false;
+      const elapsed = Date.now() - clockInAt.getTime();
+      clearInterval(timerInterval);
+      clockBtn.textContent = 'Clock In';
+      clockBtn.classList.remove('is-clocked-in');
+      clockPill.textContent = 'Clocked Out';
+      clockPill.classList.remove('status-ok');
+      clockPill.classList.add('status-warn');
+      clockMeta.textContent = 'Worked ' + formatElapsed(elapsed) + ' today. Tap to clock in again.';
+    }
+  });
+
+  // ---------- Wish list tag toggle ----------
+  document.getElementById('wishList').addEventListener('click', (e) => {
+    const pill = e.target.closest('.status-pill.tappable');
+    if(!pill) return;
+    if(pill.dataset.state === 'done'){
+      pill.dataset.state = 'requested';
+      pill.textContent = 'Requested';
+      pill.classList.remove('status-ok');
+      pill.classList.add('status-warn');
+    } else {
+      pill.dataset.state = 'done';
+      pill.textContent = 'Got It';
+      pill.classList.remove('status-warn','status-err');
+      pill.classList.add('status-ok');
+    }
+  });
+
+  // ---------- Add wish list item ----------
+  const newWishText = document.getElementById('newWishText');
+  const addWishBtn = document.getElementById('addWishBtn');
+  const wishList = document.getElementById('wishList');
+
+  function addWishItem(){
+    const text = newWishText.value.trim();
+    if(!text) return;
+
+    const row = document.createElement('div');
+    row.className = 'wish-row';
+    row.innerHTML =
+      '<p class="wish-text"></p>' +
+      '<div class="wish-meta">' +
+        '<span class="wish-meta-text">You · Just now</span>' +
+        '<span class="status-pill status-warn tappable" data-state="requested">Requested</span>' +
+      '</div>';
+    row.querySelector('.wish-text').textContent = text;
+
+    wishList.insertBefore(row, wishList.firstChild);
+    newWishText.value = '';
+    newWishText.focus();
+  }
+
+  addWishBtn.addEventListener('click', addWishItem);
+  newWishText.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') addWishItem();
+  });
+</script>
+
+</body>
+</html>
