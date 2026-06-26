@@ -1,8 +1,11 @@
 .drill-page {
   background: var(--surface);
   max-width: 760px;
+  width: 100%;
+  box-sizing: border-box;
   margin: 0 auto;
   color: var(--ink);
+  overflow-x: hidden;
 }
 
 /* PAGE HEADER */
@@ -232,7 +235,18 @@
   }
 
   .pitch-block {
-    padding: 12px 0 0;
+    padding: 12px 12px 0;
+  }
+
+  /* Explicitly set CSS width (not just the SVG attribute) so mobile WebKit
+     resolves 100% against the CSS containing block, not the viewport */
+  .pitch-svg-wrap {
+    width: 100%;
+  }
+
+  .pitch-svg-wrap svg {
+    width: 100%;
+    height: auto;
   }
 
   .content-cols {

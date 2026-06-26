@@ -147,3 +147,45 @@
     padding: 12px 16px;
   }
 }
+
+@media (max-width: 540px) {
+
+  .page-head {
+    background: var(--nav-bg);
+    border-bottom: none;
+    padding: 14px 16px 16px;
+  }
+
+  .page-title {
+    color: var(--surface);
+  }
+
+  .page-sub {
+    color: var(--ink-faint);
+  }
+
+  .stats-row {
+    background: var(--nav-bg);
+    padding: 0 16px 14px;
+    border-bottom: 1px solid var(--nav-border);
+  }
+
+  .stat-cell {
+    background: #2a2a26;
+    padding: 8px 10px;
+  }
+
+  .stat-label {
+    color: var(--ink-faint);
+  }
+
+  .stat-num {
+    color: var(--surface);
+    font-size: 18px;
+  }
+
+  .stat-sub {
+    color: #666;
+  }
+
+}

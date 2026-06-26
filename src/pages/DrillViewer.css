@@ -3,6 +3,7 @@
   min-height: 100vh;
   padding: 24px 16px;
   font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
 }
 
 .drill-back-link {

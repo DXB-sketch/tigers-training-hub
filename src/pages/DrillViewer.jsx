@@ -221,6 +221,11 @@ export default function DrillViewer() {
   const location = useLocation()
   const isAdminPreview = location.pathname.includes('/preview')
 
+  useEffect(() => {
+    document.body.classList.add('drill-mode')
+    return () => document.body.classList.remove('drill-mode')
+  }, [])
+
   if (isAdminPreview) {
     return <AdminDrillViewer planId={id} />
   }

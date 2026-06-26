@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/layout/ProtectedRoute'
+import BottomNav from './components/layout/BottomNav'
 
 import Login from './pages/Login'
 import UserManagement from './pages/UserManagement'
@@ -161,6 +162,7 @@ export default function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
+        <BottomNav />
       </BrowserRouter>
     </AuthProvider>
   )

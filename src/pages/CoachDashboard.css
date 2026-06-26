@@ -215,3 +215,35 @@
     display: none;
   }
 }
+
+
+@media (max-width: 540px) {
+
+  .session-header {
+    background: var(--nav-bg);
+    padding: 14px 16px 16px;
+  }
+
+  .session-date {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tigers-gold);
+    margin-bottom: 3px;
+  }
+
+  .session-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--surface);
+    margin-bottom: 0;
+  }
+
+  .session-team {
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-top: 4px;
+  }
+
+}

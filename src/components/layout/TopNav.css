@@ -214,3 +214,26 @@
 
   /* When dropdown is closed, hide it — toggled via conditional render in JSX */
 }
+
+@media (max-width: 540px) {
+  .top-nav {
+    height: 48px;
+    padding: 0 16px;
+  }
+
+  .nav-club {
+    display: block;
+    font-size: 11px;
+  }
+
+  .nav-links,
+  .nav-right--desktop,
+  .nav-hamburger,
+  .nav-dropdown {
+    display: none !important;
+  }
+
+  body.drill-mode .top-nav {
+    display: none;
+  }
+}
