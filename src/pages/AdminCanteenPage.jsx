@@ -6,7 +6,7 @@ import { formatShiftTime } from '../hooks/useCanteenShifts'
 import './AdminCanteenPage.css'
 
 function todayISO() {
-  return new Date().toISOString().slice(0, 10)
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'Australia/Brisbane' })
 }
 
 function fmtDateLong(isoDate) {

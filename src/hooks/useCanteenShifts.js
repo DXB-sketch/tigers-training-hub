@@ -12,10 +12,6 @@ export function formatShiftTime(start_time, end_time) {
   return `${fmt(start_time)} – ${fmt(end_time)}`
 }
 
-function toISODate(date) {
-  return date.toISOString().slice(0, 10)
-}
-
 export default function useCanteenShifts() {
   const { user } = useAuth()
   const [shifts, setShifts] = useState([])
@@ -28,9 +24,10 @@ export default function useCanteenShifts() {
       return
     }
     async function fetch() {
-      const today = new Date()
-      const plus14 = new Date(today)
-      plus14.setDate(plus14.getDate() + 14)
+      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Australia/Brisbane' })
+      const d = new Date()
+      d.setDate(d.getDate() + 14)
+      const plus14days = d.toLocaleDateString('en-CA', { timeZone: 'Australia/Brisbane' })
 
       const { data, error: err } = await supabase
         .from('canteen_shifts')
@@ -39,8 +36,8 @@ export default function useCanteenShifts() {
           canteen_shift_assignments!inner(worker_id)
         `)
         .eq('canteen_shift_assignments.worker_id', user.id)
-        .gte('shift_date', toISODate(today))
-        .lte('shift_date', toISODate(plus14))
+        .gte('shift_date', today)
+        .lte('shift_date', plus14days)
         .order('shift_date', { ascending: true })
         .order('start_time', { ascending: true })
 

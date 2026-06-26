@@ -7,8 +7,7 @@ import useCanteenWishlist from '../hooks/useCanteenWishlist'
 import './CanteenDashboard.css'
 
 function todayISO() {
-  const d = new Date()
-  return d.toISOString().slice(0, 10)
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'Australia/Brisbane' })
 }
 
 function fmtDate(isoDate) {

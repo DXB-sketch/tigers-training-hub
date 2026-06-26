@@ -3,10 +3,8 @@ import { useAuth } from '../context/AuthContext'
 import supabase from '../lib/supabase'
 
 function timeToDateToday(timeStr) {
-  const [h, m, s] = timeStr.split(':').map(Number)
-  const d = new Date()
-  d.setHours(h, m, s ?? 0, 0)
-  return d
+  const todayBrisbane = new Date().toLocaleDateString('en-CA', { timeZone: 'Australia/Brisbane' })
+  return new Date(`${todayBrisbane}T${timeStr}`)
 }
 
 export default function useCanteenClock(shiftId) {
